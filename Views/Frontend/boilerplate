@@ -1,0 +1,19 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('../../Layouts/Frontend/Header.ejs')%>
+   <body>
+
+    <!-- start page-wrapper -->
+    <div class="page-wrapper">
+        <!-- start header-section -->
+        <%- include('../../Layouts/Frontend/Navbar.ejs')%>
+       
+
+        <!-- start footer -->
+        <%- include('../../Layouts/Frontend/Footer.ejs')%>
+    </div>
+    <!-- end of page-wrapper -->
+    <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+</body>
+
+</html>
