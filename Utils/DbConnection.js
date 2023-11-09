@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose')
 const EventEmitter = require('events')
 const dbConnected = new EventEmitter()
@@ -11,16 +12,14 @@ dbConnected.on('Connection',(conStatus)=>{
     }
 })
 const ConnectToDB = async ()=>{
-    const dbURL = "mongodb+srv://bh4534727:JXAaXb3eapqaeY0V@cluster-0.f1grkj9.mongodb.net/?retryWrites=true&w=majority"
+    const dbURL = process.env.ConnectionString
         await mongoose.connect(dbURL)
         .then(response=>{
             dbConnected.emit('Connection','success')
             console.log('connection to the database successful')
         })
 }
-//create a connection object 
 const connDb = async ()=>{
-    //use the try catch block
     try{
         if(!isConnected){
             ConnectToDB()
