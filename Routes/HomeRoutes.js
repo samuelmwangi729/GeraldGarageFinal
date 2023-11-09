@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {Index,About,Services,Projects,Blog,Contact} = require('../Controllers/HomeController')
+const {Index,About,Services,Projects,Blog,Contact,Subscribe} = require('../Controllers/HomeController')
 
 //create an instance 
 const homeRoutes = Router()
@@ -12,6 +12,7 @@ homeRoutes.get("/",Index)
 .get("/Projects",Projects)
 .get("/Blog",Blog)
 .get("/Contact",Contact)
+.post('/Subscribe',Subscribe)
 
 
 module.exports = homeRoutes
