@@ -22,6 +22,7 @@ app.set('views','Views')
 //import the home routes
 app.use(homeRoutes)
 app.use(express.static('Resources'))
+//render the not found page 
 app.use((req,res)=>{
-    res.redirect("/")
+    res.render('Frontend/404.ejs')
  })

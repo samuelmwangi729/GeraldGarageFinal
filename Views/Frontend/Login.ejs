@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('../../Layouts/Frontend/Header.ejs')%>
+   <body>
+    <div class="flex justify-center bg-gray-200 pt-[100px]">
+        <div class="text-gray-700 text-center bg-gray-400 px-4 py-2 m-2">
+            <div class="max-w-[440px] mx-auto text-center mb-3">
+                <h2 class="text-[35px] col:text-[25px] text-[#0a272c] font-heading-font font-bold
+                    mb-[20px]"> Login To Your Account</h2>
+                <p class="text-[#687693] text-[16px] leading-[22px]">
+                    Key In correct Credentials to access your account. 
+                </p>
+            </div>
+            <div class="p-[50px] bg-white relative z-10 
+                shadow-[0px_1px_15px_0px_rgba(62,65,159,0.1)] sm:p-7 sm:pt-[50px]">
+                <form method="post" class="contact-validation-active mx-[-15px]"
+                    id="loginForm">
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <input type="text" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
+                            text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
+                             focus:border-[#ff4a17] focus:bg-transparent " name="username" id="username"
+                            placeholder="Username Here" autocomplete="off">
+                    </div>
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <input type="password"
+                            class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
+                            h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
+                            focus:border-[#ff4a17] focus:bg-transparent"
+                            name="password" id="password" placeholder="Type Password Here" autocomplete="off">
+                    </div>
+                    <div class="text-center w-full mb-[10px]">
+                        <button type="submit" class="bg-[#ff4a17] text-[#fff] inline-block py-[12px] px-[22px] border
+                            hover:text-[#ff4a17]
+                            border-transparent ] capitalize transition-all hover:bg-transparent
+                            hover:border-[#ff4a17]">Login Your Account</button>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>
+                            <a href="/Register" class="text-blue-500 cursor:pointer">
+                                Register
+                            </a>
+                        </span>
+                        <span>
+                            <a href="/Reset-Password" class="text-blue-500 cursor:pointer">
+                                Reset Password
+                            </a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    <!-- start page-wrapper -->
+        <!-- start footer -->
+    </div>
+    <!-- end of page-wrapper -->
+    <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+</body>
+
+</html>

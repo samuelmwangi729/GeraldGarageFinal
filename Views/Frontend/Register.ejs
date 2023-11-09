@@ -1,0 +1,127 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('../../Layouts/Frontend/Header.ejs')%>
+   <body>
+    <div class="flex justify-center bg-gray-200 mt-[75px]">
+        <div class="text-gray-700 text-center bg-gray-400 px-4 py-2 m-2">
+            <div class="max-w-[540px] mx-auto text-center mb-3">
+                <h2 class="text-[35px] col:text-[25px] text-[#0a272c] font-heading-font font-bold
+                    mb-[20px]"> Create An Account with Us</h2>
+                <p class="text-[#687693] text-[16px] leading-[22px]">
+                    Creating an account with us allows you to access our services easily. 
+                </p>
+            </div>
+            <div class="p-[30px] bg-white relative z-10 
+                shadow-[0px_1px_15px_0px_rgba(62,65,159,0.1)] sm:p-7 sm:pt-[50px]">
+                <form  class="contact-validation-active mx-[-15px]" id="registerForm">
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="namesError"></h6>
+                        <input type="text" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
+                            text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
+                             focus:border-[#ff4a17] focus:bg-transparent " name="fullname" id="fullnames"
+                            placeholder="Type Your Name Here" autocomplete="off">
+                    </div>
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="emailError"></h6>
+                        <input type="email" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
+                            text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
+                             focus:border-[#ff4a17] focus:bg-transparent " name="email" id="username"
+                            placeholder="Email Address Here" autocomplete="off">
+                    </div>
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="passwordError"></h6>
+                        <input type="password" class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
+                            h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
+                            focus:border-[#ff4a17] focus:bg-transparent"
+                            name="password" id="password" placeholder="Type Password Here" autocomplete="off">
+                    </div>
+                    <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="confirmPassError"></h6>
+                        <input type="password" class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
+                            h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
+                            focus:border-[#ff4a17] focus:bg-transparent"
+                            name="cpassword" id="cpassword" placeholder="Confirm Password">
+                    </div>
+                    <div class="text-center w-full mb-[5px]">
+                        <button type="submit" class="bg-[#ff4a17] text-[#fff] inline-block py-[12px] px-[22px] border
+                            hover:text-[#ff4a17]
+                            border-transparent ] capitalize transition-all hover:bg-transparent
+                            hover:border-[#ff4a17]">Register</button>
+                    </div>
+                    <div class="flex justify-center">
+                        <span> Already Have an Account?
+                            <a href="/Login" class="text-blue-500 cursor:pointer">
+                                Login Here
+                            </a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    <!-- start page-wrapper -->
+        <!-- start footer -->
+    </div>
+    <!-- end of page-wrapper -->
+    <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+    <script>
+        const registrationForm = document.querySelector("form#registerForm")
+        const namesError = document.querySelector("h6#namesError")
+        const emailError = document.querySelector("h6#emailError")
+        const passwordError = document.querySelector("h6#passwordError")
+        const confirmPassError = document.querySelector("h6#confirmPassError")
+        registrationForm.addEventListener('submit',async (e)=>{
+            namesError.textContent = ''
+            emailError.textContent = ''
+            passwordError.textContent = ''
+            confirmPassError.textContent = ''
+            e.preventDefault()
+            const FullNames = registrationForm.fullname.value
+            const Email = registrationForm.email.value
+            const Password = registrationForm.password.value
+            const ConfirmPassword = registrationForm.cpassword.value
+            if(!FullNames || FullNames===''){
+                namesError.textContent = 'Full Names are required'
+            }
+            if(!Email || Email===''){
+                emailError.textContent = 'Email is required'
+            }
+            if(!Password || Password===''){
+                passwordError.textContent = 'Password is required'
+            }
+            if(!ConfirmPassword || ConfirmPassword===''){
+                confirmPassError.textContent = 'Confirm Password field is required'
+            }
+            
+            if(Password !== ConfirmPassword ){
+                passwordError.textContent = 'The Password Fields Should Match'
+                confirmPassError.textContent = 'The Password Fields Should Match'
+            }
+            if(Password === ConfirmPassword && FullNames && Email && Password && ConfirmPassword){
+                if(Password.length<6){
+                    passwordError.textContent = 'Password length Should be Grater than 6'
+                }else{
+                    const res = await fetch("/Get-Registration-Details", {
+                        method:'POST',
+                        body:JSON.stringify({
+                            FullNames,
+                            Email,
+                            Password,
+                            ConfirmPassword,
+                        }),
+                        headers:{
+                            'Content-Type':'application/json'
+                        }
+                    })
+                    const dataBack = await res.json()
+                    if(dataBack.status==='success'){
+                        registrationForm.reset()
+                    }
+                    swal(dataBack.status, dataBack.message, dataBack.status);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

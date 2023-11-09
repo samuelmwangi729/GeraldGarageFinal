@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+   <%- include('../../Layouts/Frontend/Header.ejs')%>
+   <body>
+
+    <!-- start page-wrapper -->
+    <div class="page-wrapper">
+        <!-- start header-section -->
+         <!-- start page-error -->
+         <section class="relative pt-[120px] pb-[190px] md:pb-[80px] overflow-hidden z-1 text-center">
+            <div class="wraper">
+                <div class="">
+                    <div class="mx-auto text-center">
+                        <img class="max-w-full mx-auto" src="assets/images/error-404.png" alt>
+                    </div>
+                    <div class="mt-[70px] px-[200px] md:mt-[50px] md:px-[100px] sm:p-0">
+                        <h3 class="text-[#062856] text-[30px] mb-[35px] font-base-font font-semibold">Oops! Page
+                            Not
+                            Found!
+                        </h3>
+                        <p class="text-[#666] text-[16px] mb-[30px] leading-[22px]">We’re sorry but we can’t
+                            seem to
+                            find the page you requested. This might be because
+                            you have typed the web address incorrectly.</p>
+                        <a href="/" class="theme-btn">Back
+                            to home</a>
+                    </div>
+                </div> <!-- end row -->
+            </div> <!-- end container -->
+        </section>
+
+        <!-- start footer -->
+        <%- include('../../Layouts/Frontend/Footer.ejs')%>
+    </div>
+    <!-- end of page-wrapper -->
+    <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+</body>
+
+</html>
