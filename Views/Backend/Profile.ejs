@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../Layouts/Backend/Header.ejs') %>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>General</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Index</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="row">
+            <div class="col-sm-4 offset-sm-4">
+                <% if(profile) {%>
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="p-0">
+                      <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon2" aria-expanded="true" aria-controls="collapseicon2">About Me</button>
+                    </h3>
+                  </div>
+                  <div class="collapse show" id="collapseicon2" aria-labelledby="collapseicon2" data-parent="#accordion">
+                    <div class="card-body post-about">
+                      <ul>
+                        <li>
+                          <div class="icon"><i data-feather="tag" class="txt-success"></i></div>
+                          <div>
+                            <h5>Name: <%= profile.Title %> <%= user.FullName %></h5>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="icon"><i data-feather="map-pin" class="txt-success"></i></div>
+                          <div>
+                            <h5> Residence: <%= profile.Residence %></h5>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="icon"><i data-feather="phone" class="txt-success"></i></div>
+                          <div>
+                            <h5> Phone Number: <%= profile.PhoneNumber %></h5>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="icon"><i data-feather="activity" class="txt-success"></i></div>
+                          <div>
+                            <h5>Age: <%= profile.Age %></h5>
+                          </div>
+                        </li>
+                        <li>
+                          <div class="icon"><i data-feather="check-square" class="txt-success"></i></div>
+                          <div>
+                            <h5>Account Status</h5>
+                            <p>
+                                <% if(user.AccountStatus ==='verified') { %>
+                                   <span class="badge badge-success">Verified</span>
+                                <% }else{ %>
+                                   <span class="txt-danger">Not Verified</span>
+                                   <a href="/Verify-Profile" class="btn btn-success">Click Here to Verify</a>
+                                <% }%>
+                            </p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <% }else{ %>
+                    <div class="form">
+                        <form id="profileForm">
+                            <fieldset>
+                                <legend>
+                                    <h5>Create A Profile with Us</h5>
+                                </legend>
+                                <div class="form-group">
+                                    <h6 class="text-danger" id="TitleError"></h6>
+                                    <label for="Title" class="label-control"></label>
+                                    <select name="Title" class="form-control">
+                                        <option label="--Select Title--"></option>
+                                        <option value="mr">Mr</option>
+                                        <option value="mrs">Mrs</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <h6 class="text-danger" id="phoneError"></h6>
+                                    <label for="PhoneNumber" class="label-control">Phone Number</label>
+                                    <input type="number" name="PhoneNumber" id="" class="form-control" placeholder="Enter your Phone Number here">
+                                </div>
+                                <div class="form-group">
+                                    <h6 class="text-danger" id="residenceError"></h6>
+                                    <label for="Residence" class="label-control">Residence</label>
+                                    <input type="text" name="Residence" id="" class="form-control" placeholder="Enter your Place of residence here">
+                                </div>
+                                <div class="form-group">
+                                    <h6 class="text-danger" id="ageError"></h6>
+                                    <label for="Age" class="label-control">Age</label>
+                                    <input type="number" name="Age" id="" class="form-control" placeholder="Enter your Age here">
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-success" type="submit">Create Profile</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                <% } %>
+              </div>
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+        const form = document.querySelector("form#profileForm")
+        const titleError = document.querySelector("h6#TitleError")
+        const phoneError = document.querySelector("h6#phoneError")
+        const residenceError = document.querySelector("h6#residenceError")
+        const ageError = document.querySelector("h6#ageError")
+        form.addEventListener('submit',async (e)=>{
+            titleError.textContent = ""
+            phoneError.textContent = ""
+            residenceError.textContent = ""
+            ageError.textContent = ""
+            e.preventDefault()
+            const Title = form.Title.value
+            const PhoneNumber = form.PhoneNumber.value
+            const Residence = form.Residence.value
+            const Age = form.Age.value
+            if(!Title){
+                titleError.textContent = "Title is required"
+            }
+            if(!PhoneNumber){
+                phoneError.textContent = "PhoneNumber is required"
+            }
+            if(!Residence){
+                residenceError.textContent = "Residence is required"
+            }
+            if(!Age){
+                ageError.textContent = "Age is required"
+            }
+            if(Title && PhoneNumber && Residence && Age){
+                const res =await fetch("/Profile-Data",{
+                    method:'POST',
+                    body:JSON.stringify({
+                        Title,
+                        PhoneNumber,
+                        Residence,
+                        Age
+                    }),
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                })
+                const dataBack = await res.json()
+                if(dataBack.status==='success'){
+                    titleError.classList.remove('text-danger')
+                    titleError.classList.add('text-success')
+                    titleError.textContent = 'Profile registration Complete. You will be Redirected Shortly'
+                    setTimeout(()=>{
+                        location.reload()
+                    },3000)
+                }else{
+                    swal(dataBack.status, dataBack.message, dataBack.status);
+                }
+            }
+        })
+    </script>
+  </body>
+</html>

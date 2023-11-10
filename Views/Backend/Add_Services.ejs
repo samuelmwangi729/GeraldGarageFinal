@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../Layouts/Backend/Header.ejs') %>
+<style>
+    #container {
+        width: 1000px;
+        margin: 20px auto;
+    }
+    .ck-editor__editable[role="textbox"] {
+        /* editing area */
+        min-height: 200px;
+    }
+    .ck-content .image {
+        /* block images */
+        max-width: 80%;
+        margin: 20px auto;
+    }
+</style>
+  <body>
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="row page-header">
+        <div class="header-wrapper row m-0">
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="/"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <!-- Page Sidebar Ends-->
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h6>Services</h6>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Add Services</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="row">
+            <div class="col-sm-6">
+                <h4 class="text-success text-center">
+                    Available Services
+                </h4>
+            </div>
+            <div class="col-sm-6">
+                <h4 class="text-success text-center">
+                    Add A New Service
+                </h4>
+                <form  id="services" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <h6 id="errorText" class="txt-danger"></h6>
+                        <label for="Title" class="label-control">Service Title</label>
+                        <input type="text" name="ServiceTitle" id="" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="headline" class="label-control">Brief Description</label>
+                       <textarea name="headline" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo" class="label-control">Featured Image</label>
+                        <input type="file" name="FeaturedImage" id="" class="form-control" multiple="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="Title" class="label-control">Description</label>
+                        <textarea name="description" id="descriptionItems" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block" type="submit">Add Service</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+        const form = document.querySelector("form#services")
+        const errorField = document.querySelector("h6#errorText")
+        form.addEventListener('submit',async(e)=>{
+            e.preventDefault()
+            const ServiceTitle = form.ServiceTitle.value
+            const headline = form.headline.value
+            const ProjectFiles = form.FeaturedImage.files
+            const description = form.description.value
+            if(ServiceTitle && headline ){
+                const formData = new FormData()
+                    formData.append('ServiceTitle',ServiceTitle)
+                    formData.append('headline',headline)
+                    formData.append('description',description)
+                    Object.keys(ProjectFiles).forEach(key=>{
+                        formData.append(ProjectFiles[key].name,ProjectFiles[key])
+                    })
+                const res = await fetch("/Add-A-Service",{
+                    method:'POST',
+                    body:formData
+                })
+                const dataBack = await res.json()
+                console.log(dataBack)
+            }else{
+                errorField.textContent = "Please fill in all the details"
+            }
+        })
+    </script>
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#descriptionItems' ),{
+                toolbar: {
+                    items: [
+                        'exportPDF','exportWord', '|',
+                        'findAndReplace', 'selectAll', '|',
+                        'heading', '|',
+                        'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                        'bulletedList', 'numberedList', 'todoList', '|',
+                        'outdent', 'indent', '|',
+                        'undo', 'redo',
+                        '-',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                        'alignment', '|',
+                        'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                        'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                        'textPartLanguage', '|',
+                        'sourceEditing'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
+  </body>
+</html>
