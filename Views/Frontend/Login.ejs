@@ -16,12 +16,14 @@
                 <form method="post" class="contact-validation-active mx-[-15px]"
                     id="loginForm">
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="emailError"></h6>
                         <input type="text" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
                             text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
                              focus:border-[#ff4a17] focus:bg-transparent " name="username" id="username"
                             placeholder="Username Here" autocomplete="off">
                     </div>
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
+                        <h6 style="color:red" id="passwordError"></h6>
                         <input type="password"
                             class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
                             h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
@@ -55,6 +57,44 @@
     </div>
     <!-- end of page-wrapper -->
     <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+    <script>
+        const form = document.querySelector("form#loginForm")
+        const emailError = document.querySelector("h6#emailError")
+        const passwordError = document.querySelector("h6#passwordError")
+        form.addEventListener('submit',async (e)=>{
+            e.preventDefault()
+            const Username = form.username.value
+            const Password = form.password.value
+            if(Username.length<1){
+                emailError.textContent = "The Email Field is required"
+            }
+            if(Password.length<1){
+                passwordError.textContent = "The password field is required"
+            }
+            if(Username.length>0 && Password.length>0){
+                //post the data to the backend 
+                const res = await fetch("/Get-Details-Login",{
+                    method:'POST',
+                    body:JSON.stringify({
+                        Username,Password
+                    }),
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                })
+                const dataBack = await res.json()
+                //then show the alerts here 
+                if(dataBack.status==='success'){
+                    emailError.textContent = dataBack.message
+                    setTimeout(()=>{
+                        window.location.href = dataBack.path
+                    },5000)
+                }else{
+                    swal(dataBack.status, dataBack.message, dataBack.status);
+                }
+            }
+        })
+    </script>
 </body>
 
 </html>

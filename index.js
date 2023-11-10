@@ -1,6 +1,8 @@
 const express = require('express')
 const connDb = require('./Utils/DbConnection')
+const cookieParser = require('cookie-parser')
 const homeRoutes = require('./Routes/HomeRoutes')
+const ProtectedRoutes = require('./Routes/AuthRoutes')
 // create an express app 
 const app = express()
 //set the view engine 
@@ -14,6 +16,7 @@ app.listen(port,()=>{
     connDb()
     console.log("==========================================\n")
 })
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.set('view engine','ejs')
@@ -21,6 +24,7 @@ app.set('view engine','ejs')
 app.set('views','Views')
 //import the home routes
 app.use(homeRoutes)
+app.use(ProtectedRoutes)
 app.use(express.static('Resources'))
 //render the not found page 
 app.use((req,res)=>{

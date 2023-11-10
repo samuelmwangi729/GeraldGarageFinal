@@ -1,6 +1,7 @@
 const validator = require('email-validator')
 const Visitors  = require('../Models/Visitors')
 const User = require('../Models/Users')
+const generateJwt = require('../Utils/GenerateJWTtoken')
 const bcrypt = require('bcrypt')
 const generateRandom = require('../Utils/RandomUID')
 const EventEmitter = require('events')
@@ -23,10 +24,12 @@ event.on('Registered',(status)=>{
         isRegistered=false
     }
 })
+const getIpAddress = (req)=>{
+    return req.headers['x-forwarded-for'] ||req.socket.remoteAddress ||null;
+}
 const Index = async (req,res)=>{
-    var ip = req.headers['x-forwarded-for'] ||req.socket.remoteAddress ||null;
+    var ip = getIpAddress(req)
     const userPlatform=req.headers['sec-ch-ua-platform']
-    console.log(ip,userPlatform)
     //log the visitor to the database 
     const visitor = await Visitors.create({
         VisitorIdentifier:generateRandom(15),
@@ -75,7 +78,6 @@ const Subscribe = (req,res) =>{
     }
 }
 const verifyEmailAddress = async (emailaddress)=>{
-    //verify the emai; address here
     const isValidEmail = validator.validate(emailaddress)
     if(isValidEmail){
         event.emit('isValid','valid')
@@ -95,16 +97,12 @@ const Reset = (req,res)=>{
     res.render('Frontend/Reset.ejs')
 }
 const GetRegDetails = async (req,res)=>{
-    //get the details here 
     let message=""
     let Status=""
     let Code=""
     console.log(req.body)
     const {FullNames,Email,Password,ConfirmPassword} = req.body
-    //then check if the two passwords match 
     if(Password===ConfirmPassword){
-        //then the user can be stored in the database 
-        //check if user exists in the database 
         const userExists = await User.findOne({EmailAddress:Email})
         if(userExists){
             console.log('user exists')
@@ -125,7 +123,6 @@ const GetRegDetails = async (req,res)=>{
             console.log(user)
         }
     }else{
-        //return an error message 
         message="The passwords Does Not Match"
     }
     if(isRegistered){
@@ -140,4 +137,53 @@ const GetRegDetails = async (req,res)=>{
         code:Code
     })
 }
-module.exports = {Index,About,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails}
+const GetLoginDetails = async(req,res)=>{
+    const {Username,Password} = req.body 
+    //then check if the user exists 
+    if(Username.length>0 && Password.length>0){
+        //then the data is valid
+        const user = await User.Login(Username,Password)
+        if(user){
+            const userID = await User.getUID(Username)
+            //then generate the jwt token here
+            const token = generateJwt(userID)
+            //return the jwt token back to the browser 
+            res.cookie('jwt',token,{httpOnly:true,maxAge:3*24*60*60*1000})
+            //then update the visitors table using the person unique ip address
+            const ip = getIpAddress(req)
+            const visitor = await Visitors.findOne({VisitorIP:ip})
+            //update the identifier 
+            visitor.VisitorIdentifier = Username
+            visitor.save()
+            //after this redirect the user to the dashboard
+            let data = {
+                status:'success',
+                message:'User Successfully Logged In',
+                path:'/Dashboard',
+                code:200
+            }
+            res.status(200).json(data)
+        }else{
+            let data = {
+                status:'error',
+                message:'Incorrect Details Entered',
+                path:'/Login',
+                code:403
+            }
+            res.status(200).json(data)
+        }
+    }else{
+        let data = {
+            status:'error',
+            message:'Username and Password are both needed',
+            path:'/Login',
+            code:422
+        }
+        res.status(422).json(data)
+    }
+}
+const Logout = (req,res)=>{
+    res.cookie('jwt','',{httpOnly:true,maxAge:10})
+    res.redirect('/')
+}
+module.exports = {Index,About,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout}

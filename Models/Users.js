@@ -40,7 +40,7 @@ const userSchema = new Schema({
 userSchema.statics.Login= async (email,password)=>{
     const user = await User.findOne({EmailAddress:email})
     if(user){
-        const passMatch =  await bcrypt.compare(password,user.password)
+        const passMatch =  await bcrypt.compare(password,user.Password)
         if(passMatch){
             return true
         }else{
@@ -50,7 +50,12 @@ userSchema.statics.Login= async (email,password)=>{
         return false
     }
 }
-
+userSchema.statics.getUID = async (username)=>{
+    const user = await User.findOne({EmailAddress:username})
+    const splittedString = (user._id).toString().split("\"")
+    let userId=splittedString[0]
+    return userId
+}
 const User = model('User',userSchema)
 
 module.exports = User
