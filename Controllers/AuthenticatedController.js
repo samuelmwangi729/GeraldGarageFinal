@@ -2,8 +2,9 @@ const Profiles =require('../Models/Profile')
 const Services = require('../Models/Services')
 const url = require('url')
 const path = require('path')
-const Index = (req,res)=>{
-    res.render('Backend/Index.ejs')
+const Index = async (req,res)=>{
+    const services = await Services.find({Status:'Active'})
+    res.render('Backend/Index.ejs',{services:services.length})
 }
 const Profile = async (req,res)=>{
     const userEmail = res.locals.user.EmailAddress
