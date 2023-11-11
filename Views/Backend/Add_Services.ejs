@@ -76,10 +76,32 @@
             </div>
           </div>
           <!-- Container-fluid starts-->
+          <!-- Vertically centered modal-->
+          <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h3 class="modal-title" id="serviceTitle"></h3>
+                  <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="ribbon-wrapper card">
+                    <div class="card-body">
+                      <div class="ribbon ribbon-bookmark ribbon-success" id="payment"></div>
+                      <p id="serviceHeadline"></p>
+                      <p id="serviceDescription"></p>
+                    </div>
+                    <div class="card-footer">
+                      <p id="serviceStatus"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-sm-6">
-                <h4 class="text-success text-center">
-                    
+                <h4 class="text-success text-center" id="successMessage">
                 </h4>
                 <div class="card">
                   <div class="card-header">
@@ -98,26 +120,43 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <% services.map((service)=>{ %>
-                            <tr>
-                              <!-- <th scope="row"><%= service?._id %></th> -->
-                              <td><%= service.Title %></td>
-                              <td><%= service.Headline %></td>
-                              <td>
-                                <% if(service.Status==='success'){ %>
-                                  <i data-feather="check-square" class="text-success"></i>
-                                  <% }else { %>
-                                    <i data-feather="x-square" class="text-danger"></i>
-                                    <% } %>
-                              </td>
-                              <td>
-                                <a href="#" class="badge badge-sm badge-primary">View</a>
-                                <a href="#" class="badge badge-sm badge-success">Activate</a>
-                                <a href="#" class="badge badge-sm badge-warning">Supend</a>
-                                <a href="#" class="badge badge-sm badge-danger">Delete</a>
-                              </td>
-                            </tr>
-                            <% }) %>
+                            <% if(services.length ==0) { %>
+                              <tr>
+                                <td colspan="4">
+                                  <span class="txt-danger txt-center">
+                                    <div class="alert alert-danger text-center">
+                                      <strong>
+                                        No Services Uploaded
+                                      </strong>
+                                    </div>
+                                  </span>
+                                </td>
+                              </tr>
+                            <% }else{ %>
+                              <% services.map((service)=>{ %>
+                                  <tr>
+                                    <!-- <th scope="row"><%= service?._id %></th> -->
+                                    <td><%= service.Title %></td>
+                                    <td><%= service.Headline %></td>
+                                    <td>
+                                      <% if(service.Status==='Active'){ %>
+                                        <i data-feather="check-square" class="text-success"></i>
+                                      <% }else { %>
+                                          <i data-feather="x-square" class="text-danger"></i>
+                                      <% } %>
+                                    </td>
+                                    <td>
+                                      <span class="badge badge-sm badge-primary" onclick="ViewService('<%= service?._id %>')">View</span>
+                                      <% if(service.Status==='Active'){ %>
+                                        <span class="badge badge-sm badge-warning" onclick="Suspend('<%= service?._id %>')">Supend</span>
+                                      <% }else { %>
+                                        <span class="badge badge-sm badge-success" onclick="Activate('<%= service?._id %>')">Activate</span>
+                                      <% } %>
+                                      <span class="badge badge-sm badge-danger" onclick="Delete('<%= service?._id %>')">Delete</span>
+                                    </td>
+                                  </tr>
+                              <% }) %>
+                              <% } %>
                           </tbody>
                         </table>
                       </div>
@@ -135,6 +174,10 @@
                         <label for="Title" class="label-control">Service Title</label>
                         <input type="text" name="ServiceTitle" id="" class="form-control">
                     </div>
+                    <div class="form-group">
+                      <label for="ServiceFee" class="label-control">Service Fee</label>
+                      <input type="number" name="ServiceFee" id="" class="form-control">
+                  </div>
                     <div class="form-group">
                         <label for="headline" class="label-control">Brief Description</label>
                        <textarea name="headline" class="form-control"></textarea>
@@ -170,16 +213,108 @@
     </div>
     <%- include('../../Layouts/Backend/Scripts.ejs') %>
     <script>
+      const ViewService = async (id)=>{
+        const modal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
+        // modal.show()
+        const res = await fetch("/View-Service",{
+          method:'POST',
+          body:JSON.stringify({
+            ServiceID:id
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        if(dataBack.status==='success'){
+          const data = dataBack.message
+          document.querySelector("h3#serviceTitle").textContent = data.Title
+          document.querySelector("div#payment").textContent = `Ksh ${data.Pay}`
+          document.querySelector("p#serviceHeadline").textContent = data.Headline
+          document.querySelector("p#serviceDescription").innerHTML = data.Description
+          document.querySelector("p#serviceStatus").textContent = data.Status
+          modal.show()
+        }else{
+          swal(dataBack.status, dataBack.message, dataBack.status);
+        }
+      }
+      const Activate = async(id)=>{
+        //send the data to the backend 
+        const res = await fetch("/Activate-Service",{
+          method:'POST',
+          body:JSON.stringify({
+            ServiceID:id
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        if(dataBack.status==='success'){
+          document.querySelector("h4#successMessage").textContent = dataBack.message
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }else{
+          swal(dataBack.status, dataBack.message, dataBack.status);
+        }
+      }
+      const Suspend = async(id)=>{
+        //send the data to the backend 
+        const res = await fetch("/Suspend-Service",{
+          method:'POST',
+          body:JSON.stringify({
+            ServiceID:id
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        if(dataBack.status==='success'){
+          document.querySelector("h4#successMessage").textContent = dataBack.message
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }else{
+          swal(dataBack.status, dataBack.message, dataBack.status);
+        }
+      }
+      const Delete = async(id)=>{
+        //send the data to the backend 
+        const res = await fetch("/Delete-Service",{
+          method:'POST',
+          body:JSON.stringify({
+            ServiceID:id
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        if(dataBack.status==='success'){
+          document.querySelector("h4#successMessage").textContent = dataBack.message
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }else{
+          swal(dataBack.status, dataBack.message, dataBack.status);
+        }
+      }
+    </script>
+    <script>
         const form = document.querySelector("form#services")
         const errorField = document.querySelector("h6#errorText")
         form.addEventListener('submit',async(e)=>{
           e.preventDefault()
           const ServiceTitle = form.ServiceTitle
           const headline = form.headline
+          const Pay = form.ServiceFee
           const ProjectFiles = form.FeaturedImage.files
           const description = form.description
           const formData = new FormData()
             formData.append("Title",ServiceTitle.value)
+            formData.append("Pay",Pay.value)
             formData.append("Headline",headline.value)
             formData.append("Description",description.value)
             for(let i=0;i<ProjectFiles.length;i++){

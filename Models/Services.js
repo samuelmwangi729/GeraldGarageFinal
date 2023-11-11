@@ -7,6 +7,11 @@ const ServiceSchema =  new Schema({
         type:String,
         required:[true,'This field is required'],
     },
+    Pay:{
+        type:Number,
+        required:[true,'This field is required'],
+        default:0
+    },
     Headline:{
         type:String,
         required:[true,'This field is required'],

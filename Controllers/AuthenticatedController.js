@@ -1,5 +1,6 @@
 const Profiles =require('../Models/Profile')
 const Services = require('../Models/Services')
+const url = require('url')
 const path = require('path')
 const Index = (req,res)=>{
     res.render('Backend/Index.ejs')
@@ -49,12 +50,13 @@ const GetProfileData = async(req,res)=>{
     }
 }
 const Add_Service = async(req,res)=>{
-    const services = await Services.find({Status:'Active'})
+    const services = await Services.find()
     res.render('Backend/Add_Services.ejs',{services:services})
 }
 const AcceptServiceData = async(req,res)=>{
     const {Title,
         Headline,
+        Pay,
         Description} = req.body
     const files = req.files
     const dirname = require('path').dirname;
@@ -82,6 +84,7 @@ const AcceptServiceData = async(req,res)=>{
     }else{}
     const service = new Services({
         Title:Title,
+        Pay:Pay,
         Headline:Headline,
         Description:Description,
         Photo:fileNameArray[0]
@@ -101,4 +104,132 @@ const AcceptServiceData = async(req,res)=>{
         })
     }
 }
-module.exports = {Index,Profile,All_Products,All_Services,All_Orders,GetProfileData,Add_Service,AcceptServiceData}
+const Activate_Service = async (req,res)=>{
+    let code ;
+    let message ;
+    let status ;
+    let {ServiceID} = req.body
+    console.log("backend called")
+    if(!ServiceID){
+        code = 422
+        message=`Invalid Data Submitted`
+        status='error'
+    }else{
+        const service = await Services.findById(ServiceID)
+        if(service){
+            //the service exists
+            service.Status='Active'
+            service.save()
+            code = 200
+            message=`${service.Title} Successfully Activated`
+            status='success'
+            console.log(service)
+        }else{
+            code = 422
+            message=`Service Could not be  Activated`
+            status='error'
+        }
+    }
+    res.status(code).json({
+        status,
+        message,
+        code
+    })
+    //get the service
+}
+const View_Service = async (req,res)=>{
+    let code ;
+    let message ;
+    let status ;
+    let {ServiceID} = req.body
+    if(!ServiceID){
+        code = 422
+        message=`Invalid Data Submitted`
+        status='error'
+    }else{
+        const service = await Services.findById(ServiceID)
+        if(service){
+            //the service exists
+            code = 200
+            message=service
+            status='success'
+        }else{
+            code = 422
+            message=`Service Could not be Found`
+            status='error'
+        }
+    }
+    res.status(code).json({
+        status,
+        message,
+        code
+    })
+}
+const Suspend_Service = async (req,res)=>{
+    let code ;
+    let message ;
+    let status ;
+    let {ServiceID} = req.body
+    console.log("backend called")
+    if(!ServiceID){
+        code = 422
+        message=`Invalid Data Submitted`
+        status='error'
+    }else{
+        const service = await Services.findById(ServiceID)
+        if(service){
+            //the service exists
+            service.Status='Inactive'
+            service.save()
+            code = 200
+            message=`${service.Title} Successfully Suspended`
+            status='success'
+            console.log(service)
+        }else{
+            code = 422
+            message=`Service Could not be  Suspended`
+            status='error'
+        }
+    }
+    res.status(code).json({
+        status,
+        message,
+        code
+    })
+}
+const Delete_Service = async (req,res)=>{
+    let code ;
+    let message ;
+    let status ;
+    let {ServiceID} = req.body
+    console.log("backend called")
+    if(!ServiceID){
+        code = 422
+        message=`Invalid Data Submitted`
+        status='error'
+    }else{
+        const service = await Services.findById(ServiceID)
+        if(service){
+            //the service exists
+            await Services.findByIdAndDelete(ServiceID)
+            code = 200
+            message=`Service Successfully Deleted`
+            status='success'
+            console.log(service)
+        }else{
+            code = 422
+            message=`Service Could not be Deleted`
+            status='error'
+        }
+    }
+    res.status(code).json({
+        status,
+        message,
+        code
+    })
+}
+module.exports = {Index,Profile,All_Products,All_Services,
+    All_Orders,GetProfileData,
+    Add_Service,AcceptServiceData,
+    Activate_Service,View_Service,
+    Suspend_Service,Delete_Service}
