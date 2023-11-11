@@ -41,6 +41,10 @@ const ProductSchema = new Schema({
         type:Number,
         required:[true,'Price is required']
     },
+    ProductVariations:{
+        type:Array,
+        required:[true,'Product Variations are required'],
+    },
     Status:{
         type:String,
         enum:['Active','Inactive'],

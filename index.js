@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const {getAuthUser} = require('./Middlewares/Authentication')
 const homeRoutes = require('./Routes/HomeRoutes')
 const ProtectedRoutes = require('./Routes/AuthRoutes')
+const productRoutes = require('./Routes/ProductRoutes')
 // create an express app 
 const app = express()
 //set the view engine 
@@ -26,6 +27,7 @@ app.set('view engine','ejs')
 app.set('views','Views')
 //import the home routes
 app.use(homeRoutes)
+app.use(productRoutes)
 app.use(ProtectedRoutes)
 app.use(express.static('Resources'))
 //render the not found page 

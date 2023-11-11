@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../../Layouts/Backend/Header.ejs') %>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <form class="form-inline search-full col" action="#" method="get">
+            <div class="form-group w-100">
+              <div class="Typeahead Typeahead--twitterUsers">
+                <div class="u-posRelative">
+                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
+                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
+                </div>
+                <div class="Typeahead-menu"></div>
+              </div>
+            </div>
+          </form>
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="onhover-dropdown">
+                <div class="notification-box"><i data-feather="star"></i></div>
+                <div class="onhover-show-div bookmark-flip">
+                  <div class="flip-card">
+                    <div class="flip-card-inner">
+                      <div class="back">
+                        <ul>
+                          <li>
+                            <div class="droplet-dropdown bookmark-dropdown flip-back-content">
+                              <input type="text" placeholder="search...">
+                            </div>
+                          </li>
+                          <li class="pb-0">
+                            <button class="d-block flip-back" id="flip-back">Back          </button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <!-- Page Sidebar Ends-->
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>Available Brands</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Index</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2 class="text-center">
+                        Create Brands
+                    </h2>
+                    <form  id="brands">
+                        <div class="alert hidden" id="brandAlert">
+                            <span id="respText"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Brand name" class="label-control">Brand Name</label>
+                            <input type="text" name="BrandName" id="" class="form-control" placeholder="Enter the Brand Name here">
+                        </div>
+                        <div class="form-group">
+                            <label for="Brand Icon" class="label-control">Brand Photo</label>
+                            <input type="file" name="BrandIcon" id="" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success" type="submit">Create Brand</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    Available Brands
+                </div>
+            </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+        const form = document.querySelector("form#brands")
+        form.addEventListener('submit',async(e)=>{
+            e.preventDefault()
+            const Brand = form.BrandName.value
+            const BrandIcon = form.BrandIcon.files
+            const formData = new FormData()
+            formData.append("BrandName",Brand)
+            for(let i=0;i<BrandIcon.length;i++){
+              formData.append("files",BrandIcon[i])
+            }
+            console.log(...formData)
+            const res = await fetch("/Save-Brand",{
+                method:'POST',
+                body:formData
+            })
+            const dataBack = await res.json()
+            if(dataBack.status==='success'){
+                document.querySelector("div#brandAlert").classList.remove('hidden')
+                document.querySelector("div#brandAlert").classList.add('alert-success')
+                document.querySelector("span#respText").textContent = dataBack.message
+                form.reset()
+                setTimeout(()=>{
+                    location.reload()
+                },3000)
+            }else{
+                document.querySelector("div#brandAlert").classList.remove('hidden')
+                document.querySelector("div#brandAlert").classList.add('alert-danger')
+                document.querySelector("span#respText").textContent = dataBack.message
+            }
+        })
+    </script>
+  </body>
+</html>
