@@ -86,7 +86,7 @@
                 <h4 class="text-success text-center">
                     Add A New Service
                 </h4>
-                <form  id="services" enctype="multipart/form-data">
+                <form  id="services">
                     <div class="form-group">
                         <h6 id="errorText" class="txt-danger"></h6>
                         <label for="Title" class="label-control">Service Title</label>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="form-group">
                         <label for="photo" class="label-control">Featured Image</label>
-                        <input type="file" name="FeaturedImage" id="" class="form-control" multiple="true">
+                        <input type="file" name="FeaturedImage" id="" class="form-control"  accept="image/*">
                     </div>
                     <div class="form-group">
                         <label for="Title" class="label-control">Description</label>
@@ -130,53 +130,39 @@
         const form = document.querySelector("form#services")
         const errorField = document.querySelector("h6#errorText")
         form.addEventListener('submit',async(e)=>{
-            e.preventDefault()
-            const ServiceTitle = form.ServiceTitle.value
-            const headline = form.headline.value
-            const ProjectFiles = form.FeaturedImage.files
-            const description = form.description.value
-            if(ServiceTitle && headline ){
-                const formData = new FormData()
-                    formData.append('ServiceTitle',ServiceTitle)
-                    formData.append('headline',headline)
-                    formData.append('description',description)
-                    Object.keys(ProjectFiles).forEach(key=>{
-                        formData.append(ProjectFiles[key].name,ProjectFiles[key])
-                    })
-                const res = await fetch("/Add-A-Service",{
-                    method:'POST',
-                    body:formData
-                })
-                const dataBack = await res.json()
-                console.log(dataBack)
+          e.preventDefault()
+          const ServiceTitle = form.ServiceTitle
+          const headline = form.headline
+          const ProjectFiles = form.FeaturedImage.files
+          const description = form.description
+          const formData = new FormData()
+            formData.append("Title",ServiceTitle.value)
+            formData.append("Headline",headline.value)
+            formData.append("Description",description.value)
+            for(let i=0;i<ProjectFiles.length;i++){
+              formData.append("files",ProjectFiles[i])
+            }
+            const res = await fetch("/Add-A-Service",{
+              method:'POST',
+              body:formData
+            })
+            const dataBack = await res.json()
+            if(dataBack.status==='success'){
+              form.reset()
+              errorField.classList.remove('txt-danger')
+              errorField.classList.add('txt-success')
+              errorField.textContent = "Service Successfully Added. Reloading ..."
+              setTimeout(()=>{
+                location.reload()
+              },3000)
             }else{
-                errorField.textContent = "Please fill in all the details"
+              swal(dataBack.status, dataBack.message, dataBack.status);
             }
         })
     </script>
     <script>
         ClassicEditor
-            .create( document.querySelector( '#descriptionItems' ),{
-                toolbar: {
-                    items: [
-                        'exportPDF','exportWord', '|',
-                        'findAndReplace', 'selectAll', '|',
-                        'heading', '|',
-                        'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
-                        'bulletedList', 'numberedList', 'todoList', '|',
-                        'outdent', 'indent', '|',
-                        'undo', 'redo',
-                        '-',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-                        'alignment', '|',
-                        'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
-                        'specialCharacters', 'horizontalLine', 'pageBreak', '|',
-                        'textPartLanguage', '|',
-                        'sourceEditing'
-                    ],
-                    shouldNotGroupWhenFull: true
-                },
-            } )
+            .create( document.querySelector( '#descriptionItems' ))
             .catch( error => {
                 console.error( error );
             } );
