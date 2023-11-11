@@ -49,5 +49,27 @@ const getAuthUser = async (req,res,next)=>{
     }
 }
 
-
-module.exports = {checkAuth,getAuthUser}
+const checkAdmin = (req,res,next)=>{
+    const tokenExists = req.cookies.jwt
+    if(tokenExists){
+        //verify the token
+        token.verify(tokenExists,process.env.TOKEN_SECRET_KEY,async (err,decodedToken)=>{
+            if(err){
+                res.locals.user=null
+                res.redirect("/")
+            }else{
+                const userId = decodedToken.uniqueKey
+                const userData = await User.findById(userId)
+                if(userData.Role==='Admin' && userData.isStaff ==='Staff'){
+                    next()
+                }else{
+                    res.redirect("/Dashboard")
+                }
+            }
+        })
+    }else{
+        
+        res.redirect("/Dashboard")
+    }
+}
+module.exports = {checkAuth,getAuthUser,checkAdmin}

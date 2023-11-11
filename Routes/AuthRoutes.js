@@ -4,7 +4,7 @@ const {Index,Profile,
     All_Products,All_Services,All_Orders,
     GetProfileData,Add_Service,
     AcceptServiceData,Activate_Service,View_Service,Suspend_Service,Delete_Service} = require('../Controllers/AuthenticatedController')
-const {getAuthUser,checkAuth} = require('../Middlewares/Authentication')
+const {getAuthUser,checkAuth,checkAdmin} = require('../Middlewares/Authentication')
 const ProtectedRoutes = Router()
 
 ProtectedRoutes.get("/Dashboard",getAuthUser,checkAuth,Index)
@@ -14,7 +14,7 @@ ProtectedRoutes.get("/Dashboard",getAuthUser,checkAuth,Index)
 .get("/Profile",getAuthUser,checkAuth,Profile)
 .get("/Add-Service",getAuthUser,checkAuth,Add_Service)
 .post("/Profile-Data",getAuthUser,checkAuth,GetProfileData)
-.post("/Add-A-Service",fileUpload({createParentPath:true}),getAuthUser,checkAuth,AcceptServiceData)
+.post("/Add-A-Service",fileUpload({createParentPath:true}),getAuthUser,checkAuth,checkAdmin,AcceptServiceData)
 .post("/Activate-Service",Activate_Service)
 .post("/View-Service",View_Service)
 .post("/Suspend-Service",Suspend_Service)

@@ -46,10 +46,21 @@
                             <a href="blog.html" class="transition-all duration-300 hover:text-white">News &
                                 Media</a>
                         </li>
-                        <li
+                        <% if(user){%>
+                            <li
+                                class="relative text-[16px] xl:text-[14px] lg:text-[12px] float-left p-[10px_10px] text-white">
+                                <a href="/Dashboard" class="transition-all duration-300 hover:text-white">My Account</a>
+                            </li>
+                            <li
+                                class="relative text-[16px] xl:text-[14px] lg:text-[12px] float-left p-[10px_10px] text-white">
+                                <a href="/Logout" class="transition-all duration-300 hover:text-white">Logout</a>
+                            </li>
+                        <% }else{%>
+                            <li
                             class="relative text-[16px] xl:text-[14px] lg:text-[12px] float-left p-[10px_10px] text-white">
                             <a href="/Login" class="transition-all duration-300 hover:text-white">Login</a>
                         </li>
+                        <%}%>
                     </ul>
                     <ul class="ml-[20px] col:ml-0">
                         <li class="text-[16px] float-left p-[10px] pl-0 text-white">
