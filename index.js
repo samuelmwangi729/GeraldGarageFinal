@@ -1,6 +1,7 @@
 const express = require('express')
 const connDb = require('./Utils/DbConnection')
 const cookieParser = require('cookie-parser')
+const {getAuthUser} = require('./Middlewares/Authentication')
 const homeRoutes = require('./Routes/HomeRoutes')
 const ProtectedRoutes = require('./Routes/AuthRoutes')
 // create an express app 
@@ -19,6 +20,7 @@ app.listen(port,()=>{
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
+app.get("*",getAuthUser)
 app.set('view engine','ejs')
 //set the view folder 
 app.set('views','Views')
