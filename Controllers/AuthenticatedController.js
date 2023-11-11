@@ -53,7 +53,6 @@ const Add_Service = async(req,res)=>{
     res.render('Backend/Add_Services.ejs',{services:services})
 }
 const AcceptServiceData = async(req,res)=>{
-    console.log(req.body)
     const {Title,
         Headline,
         Description} = req.body
@@ -72,7 +71,6 @@ const AcceptServiceData = async(req,res)=>{
             fileNameArray.push(files[item].name)
             // upload the files to the server 
             const filePath = path.join(projectRoot,'Resources','Uploads',files[item].name)
-            console.log(filePath)
             files[item].mv(filePath,(err)=>{
                 if(err){
                     console.log('Could not upload the images')

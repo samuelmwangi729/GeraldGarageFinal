@@ -63,7 +63,7 @@
             <div class="page-title">
               <div class="row">
                 <div class="col-6">
-                  <h6>Services</h6>
+                  <h3>Services</h3>
                 </div>
                 <div class="col-6">
                   <ol class="breadcrumb">
@@ -79,8 +79,51 @@
           <div class="row">
             <div class="col-sm-6">
                 <h4 class="text-success text-center">
-                    Available Services
+                    
                 </h4>
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="text-center">Available Services</h3>
+                  </div>
+                  <div class="card-block row">
+                    <div class="col-sm-12 col-lg-12 col-xl-12">
+                      <div class="table-responsive">
+                        <table class="table table-bordered table-stripped">
+                          <thead class="table-dark">
+                            <tr>
+                              <th scope="col">Title</th>
+                              <th scope="col">Headline</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% services.map((service)=>{ %>
+                            <tr>
+                              <!-- <th scope="row"><%= service?._id %></th> -->
+                              <td><%= service.Title %></td>
+                              <td><%= service.Headline %></td>
+                              <td>
+                                <% if(service.Status==='success'){ %>
+                                  <i data-feather="check-square" class="text-success"></i>
+                                  <% }else { %>
+                                    <i data-feather="x-square" class="text-danger"></i>
+                                    <% } %>
+                              </td>
+                              <td>
+                                <a href="#" class="badge badge-sm badge-primary">View</a>
+                                <a href="#" class="badge badge-sm badge-success">Activate</a>
+                                <a href="#" class="badge badge-sm badge-warning">Supend</a>
+                                <a href="#" class="badge badge-sm badge-danger">Delete</a>
+                              </td>
+                            </tr>
+                            <% }) %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
             <div class="col-sm-6">
                 <h4 class="text-success text-center">
