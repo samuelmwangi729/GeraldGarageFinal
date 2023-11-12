@@ -1,8 +1,4 @@
 const {Schema,model} = require('mongoose')
-const mongoose = require('mongoose')
-const slug = require('mongoose-slug-generator')
-
-mongoose.plugin(slug)
 
 const CategorySchema = new Schema({
     Category:{
@@ -20,10 +16,6 @@ const CategorySchema = new Schema({
     }
 },{timestamps:true})
 
-CategorySchema.pre('save',(req,res,next)=>{
-    this.CategorySlug = this.Category.split(" ").join("-")
-    next()
-})
 const Category = model('Category',CategorySchema)
 
 

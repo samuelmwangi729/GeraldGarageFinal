@@ -84,7 +84,7 @@
             <div class="page-title">
               <div class="row">
                 <div class="col-6">
-                  <h3>Available Brands</h3>
+                  <h3>Available Categories</h3>
                 </div>
                 <div class="col-6">
                   <ol class="breadcrumb">
@@ -100,65 +100,59 @@
             <div class="row">
                 <div class="col-sm-6">
                     <h2 class="text-center">
-                        Create Brands
+                        Create Categories
                     </h2>
-                    <form  id="brands">
+                    <form  id="categories">
                         <div class="alert hidden" id="brandAlert">
                             <span id="respText"></span>
                         </div>
                         <div class="form-group">
-                            <label for="Brand name" class="label-control">Brand Name</label>
-                            <input type="text" name="BrandName" id="" class="form-control" placeholder="Enter the Brand Name here">
+                            <label for="Category name" class="label-control">Category Name</label>
+                            <input type="text" name="CategoryName" id="" class="form-control" placeholder="Enter the Category Name here">
                         </div>
                         <div class="form-group">
-                            <label for="Brand Icon" class="label-control">Brand Photo</label>
-                            <input type="file" name="BrandIcon" id="" class="form-control" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-success" type="submit">Create Brand</button>
+                            <button class="btn btn-success" type="submit">Create Category</button>
                         </div>
                     </form>
                 </div>
                 <div class="col-sm-6">
                     <h2 class="text-center">
-                      Available Brands
+                      Available Categories
                     </h2>
                     <table class="table table-bordered table-hover table-codensed">
                       <thead class="table-dark">
-                        <th>image</th>
-                        <th>Brand</th>
+                        <th>Category</th>
                         <th>status</th>
                         <th>Actions</th>
                       </thead>
                       <tbody>
                         <tr>
-                            <% if(brands.length===0) { %>
+                            <% if(categories.length===0) { %>
                               <tr>
                             <td colspan="4">
                               <div class="alert alert-warning">
-                                <span>No Brands Available</span>
+                                <span>No Categories Available</span>
                               </div>
                             </td>
                             </tr>
                             <% }else{ %>
-                              <% brands.map((brand)=>{ %>
+                              <% categories.map((category)=>{ %>
                                 <tr>
-                              <td><img src="Uploads/<%=brand.Image%>" style="height: 30px; width: 30px;border-radius:15px;"/></td>
-                              <td><%= brand.Brand %></td>
+                              <td><%= category.Category %></td>
                               <td>
-                                <% if(brand.Status==='Active'){ %>
+                                <% if(category.Status==='Active'){ %>
                                   <i data-feather="check-square" class="txt-success"></i> 
                                   <% }else { %>
                                     <i data-feather="x-square" class="txt-danger"></i> 
                                     <% } %>
                               </td>
                               <td>
-                                <% if(brand.Status==='Active'){ %>
-                                  <span class="badge badge-sm badge-warning" onclick="Suspend('<%= brand?._id %>')">Supend</span>
+                                <% if(category.Status==='Active'){ %>
+                                  <span class="badge badge-sm badge-warning" onclick="WorkOn('<%= category?._id %>','Suspend')">Supend</span>
                                 <% }else { %>
-                                  <span class="badge badge-sm badge-success" onclick="Activate('<%= brand?._id %>')">Activate</span>
+                                  <span class="badge badge-sm badge-success" onclick="WorkOn('<%= category?._id %>','Activate')">Activate</span>
                                 <% } %>
-                                <span class="badge badge-sm badge-danger" onclick="Delete('<%= brand?._id %>')">Delete</span>
+                                <span class="badge badge-sm badge-danger" onclick="WorkOn('<%= category?._id %>','Delete')">Delete</span>
                               </td>
                               </tr>
                               <% }) %>
@@ -185,20 +179,18 @@
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
     <script>
-        const form = document.querySelector("form#brands")
+        const form = document.querySelector("form#categories")
         form.addEventListener('submit',async(e)=>{
             e.preventDefault()
-            const Brand = form.BrandName.value
-            const BrandIcon = form.BrandIcon.files
-            const formData = new FormData()
-            formData.append("BrandName",Brand)
-            for(let i=0;i<BrandIcon.length;i++){
-              formData.append("files",BrandIcon[i])
-            }
-            console.log(...formData)
-            const res = await fetch("/Save-Brand",{
+            const Categoryname = form.CategoryName.value
+            const res = await fetch("/Save-Category",{
                 method:'POST',
-                body:formData
+                body:JSON.stringify({
+                    "CategoryName":Categoryname
+                }),
+                headers:{
+                    'Content-Type':'application/json'
+                }
             })
             const dataBack = await res.json()
             if(dataBack.status==='success'){
@@ -217,61 +209,12 @@
         })
     </script>
     <script>
-      const Suspend = async(id)=>{
-        const res = await fetch("/Suspend-Brand",{
+      const WorkOn = async(id,Action)=>{
+        const res = await fetch("/WorkOn_Category",{
           method:'POST',
           body:JSON.stringify({
-            BrandID:id,
-          }),
-          headers:{
-            'Content-Type':'application/json'
-          }
-        })
-        const dataBack = await res.json()
-        if(dataBack.status==='success'){
-            document.querySelector("div#brandAlert").classList.remove('hidden')
-            document.querySelector("div#brandAlert").classList.add('alert-success')
-            document.querySelector("span#respText").textContent = dataBack.message
-            form.reset()
-            setTimeout(()=>{
-                location.reload()
-            },3000)
-        }else{
-            document.querySelector("div#brandAlert").classList.remove('hidden')
-            document.querySelector("div#brandAlert").classList.add('alert-danger')
-            document.querySelector("span#respText").textContent = dataBack.message
-        }
-      }
-      const Activate = async(id)=>{
-        const res = await fetch("/Activate-Brand",{
-          method:'POST',
-          body:JSON.stringify({
-            BrandID:id,
-          }),
-          headers:{
-            'Content-Type':'application/json'
-          }
-        })
-        const dataBack = await res.json()
-        if(dataBack.status==='success'){
-            document.querySelector("div#brandAlert").classList.remove('hidden')
-            document.querySelector("div#brandAlert").classList.add('alert-success')
-            document.querySelector("span#respText").textContent = dataBack.message
-            form.reset()
-            setTimeout(()=>{
-                location.reload()
-            },3000)
-        }else{
-            document.querySelector("div#brandAlert").classList.remove('hidden')
-            document.querySelector("div#brandAlert").classList.add('alert-danger')
-            document.querySelector("span#respText").textContent = dataBack.message
-        }
-      }
-      const Delete = async(id)=>{
-        const res = await fetch("/Delete-Brand",{
-          method:'POST',
-          body:JSON.stringify({
-            BrandID:id,
+            CategoryID:id,
+            Action:Action
           }),
           headers:{
             'Content-Type':'application/json'
