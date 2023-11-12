@@ -28,7 +28,7 @@ const getAuthUser = async (req,res,next)=>{
         token.verify(tokenExists,process.env.TOKEN_SECRET_KEY,async (err,decodedToken)=>{
             if(err){
                 res.locals.user=null
-                res.redirect("/")
+                next()
             }else{
                 const userId = decodedToken.uniqueKey
                 const userData = await User.findById(userId)
@@ -45,7 +45,7 @@ const getAuthUser = async (req,res,next)=>{
         })
     }else{
         res.locals.user=null
-        res.redirect("/")
+        next()
     }
 }
 
