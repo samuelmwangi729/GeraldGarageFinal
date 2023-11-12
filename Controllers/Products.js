@@ -1,5 +1,6 @@
 const Brand  = require('../Models/Brands')
 const Category = require('../Models/Categories')
+const Variation = require('../Models/Variations')
 const path = require('path')
 const Create_Brands = async (req,res)=>{
     const brands = await Brand.find()
@@ -162,7 +163,7 @@ const WorkOn_Category = async(req,res)=>{
     if(!category){
         code=422
         status='error'
-        message=`Unknown Error Occurreds`
+        message=`Unknown Error Occurred`
     }else{
         if(Action==='Activate'){
             category.Status='Active'
@@ -195,4 +196,81 @@ const WorkOn_Category = async(req,res)=>{
         })
     }
 }
-module.exports = {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,Add_Category,Save_Category,WorkOn_Category}
+const Add_Product = async (req, res)=>{
+    res.render("Backend/Products/Add_Products.ejs")
+}
+const Add_Variations = async(req,res)=>{
+    const categories = await Category.find({Status:'Active'})
+    const variations  = await Variation.find()
+    res.render('Backend/Products/Variations.ejs',{variations,categories})
+}
+const Save_Variations = async(req,res)=>{
+    const {VariationName,CategoryName} = req.body
+
+    const variation = new Variation({
+        Category:CategoryName,
+        Variation:VariationName
+    })
+
+    await variation.save()
+    if(variation){
+        res.status(200).json({
+            code:200,
+            status:'success',
+            message:`${variation.Variation} Successfully Added`
+        })
+    }else{
+        res.status(422).json({
+            code:422,
+            status:'error',
+            message:`Unknown Error Occurred`
+        })
+    }
+}
+const WorkOn_Variation = async(req,res)=>{
+    let code;
+    let message;
+    let status;
+    //get the category Id 
+    const {VariationID,Action} = req.body 
+    console.log(req.body)
+    //get the categories from the database 
+    let variation =  await Variation.findById(VariationID)
+    if(!variation){
+        code=422
+        status='error'
+        message=`Unknown Error Occurred`
+    }else{
+        if(Action==='Activate'){
+            variation.Status='Active'
+            variation.save()
+            code=200
+            status='success'
+            message=`${variation.Variation} Successfully Activated`
+        }else if(Action ==='Suspend'){
+            variation.Status="Inactive"
+            variation.save()
+            code=200
+            status='success'
+            message=`${variation.Variation} Successfully Suspended`
+        }
+        else if(Action==='Delete'){
+            await Variation.findByIdAndDelete(VariationID)
+            code=200
+            status='success'
+            message=`${variation.Variation} Successfully Deleted`
+        }
+        else{
+            code=422
+            status='error'
+            message=`Unknown Error Occurred`
+        }
+        res.status(code).json({
+            code:422,
+            status:status,
+            message:message
+        })
+    }
+}
+module.exports = {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,
+    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,Add_Variations,WorkOn_Variation}

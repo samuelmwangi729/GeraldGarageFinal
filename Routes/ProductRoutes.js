@@ -1,10 +1,15 @@
 const {Router} = require('express')
 const fileUploader = require('express-fileupload')
-const {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,Add_Category,Save_Category,WorkOn_Category} = require('../Controllers/Products')
+const {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,
+    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,Add_Variations,WorkOn_Variation} = require('../Controllers/Products')
 const productRoutes = Router()
 
 productRoutes.get("/Create-Brands",Create_Brands)
 .get("/Add-Category",Add_Category)
+.get("/Add-Product",Add_Product)
+.get("/Add-Variation",Add_Variations)
+.post("/Save-Variation",Save_Variations)
+.post("/WorkOn-Variation",WorkOn_Variation)
 .post('/Save-Category',Save_Category)
 .post("/Save-Brand",fileUploader({createParentPath:true}),Save_Brand)
 .post("/Suspend-Brand",Suspend_Brand)

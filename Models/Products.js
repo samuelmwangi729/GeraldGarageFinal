@@ -44,6 +44,7 @@ const ProductSchema = new Schema({
     ProductVariations:{
         type:Array,
         required:[true,'Product Variations are required'],
+        default:['']
     },
     Status:{
         type:String,
@@ -51,10 +52,6 @@ const ProductSchema = new Schema({
         default:'Active'
     }
 },{timestamps:true})
-ProductSchema.pre("save", function(next) {
-    this.ProductSlug = this.ProductName.split(" ").join("-");
-    next();
-});
 Products.statics.getBrand = async(brand)=>{
     //get the products with all the brands passed as arguments
     const products = await Products.find({Brand:brand})

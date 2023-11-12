@@ -38,27 +38,6 @@
               <li>
                 <div class="mode"><i data-feather="moon"></i></div>
               </li>
-              <li class="onhover-dropdown">
-                <div class="notification-box"><i data-feather="star"></i></div>
-                <div class="onhover-show-div bookmark-flip">
-                  <div class="flip-card">
-                    <div class="flip-card-inner">
-                      <div class="back">
-                        <ul>
-                          <li>
-                            <div class="droplet-dropdown bookmark-dropdown flip-back-content">
-                              <input type="text" placeholder="search...">
-                            </div>
-                          </li>
-                          <li class="pb-0">
-                            <button class="d-block flip-back" id="flip-back">Back          </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
               <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
               <li class="profile-nav onhover-dropdown p-0 me-0">
                 <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
