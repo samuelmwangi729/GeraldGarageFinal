@@ -9,6 +9,11 @@ const BrandSchema = new Schema({
         type:String,
         required:[true,'The brand Image is required']
     },
+    Category:{
+        type:String,
+        required:[true,'The category is required'],
+        default:'Generic'
+    },
     Status:{
         type:String,
         enum:['Active','Inactive'],

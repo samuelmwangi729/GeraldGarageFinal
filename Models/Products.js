@@ -52,7 +52,7 @@ const ProductSchema = new Schema({
         default:'Active'
     }
 },{timestamps:true})
-Products.statics.getBrand = async(brand)=>{
+ProductSchema.statics.getBrand = async(brand)=>{
     //get the products with all the brands passed as arguments
     const products = await Products.find({Brand:brand})
     if(products){
@@ -61,7 +61,7 @@ Products.statics.getBrand = async(brand)=>{
         return false
     }
 }
-Products.statics.getCategory = async(category)=>{
+ProductSchema.statics.getCategory = async(category)=>{
     //get the products with all the brands passed as arguments
     const products = await Products.find({ProductCategory:category})
     if(products){
@@ -70,7 +70,7 @@ Products.statics.getCategory = async(category)=>{
         return false
     }
 }
-Products.statics.findBySlug = async(slug)=>{
+ProductSchema.statics.findBySlug = async(slug)=>{
     //get the products with all the brands passed as arguments
     const products = await Products.findOne({ProductSlug:slug})
     if(products){

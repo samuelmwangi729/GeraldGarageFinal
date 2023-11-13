@@ -1,49 +1,32 @@
 const Brand  = require('../Models/Brands')
 const Category = require('../Models/Categories')
 const Variation = require('../Models/Variations')
+const {UploadFiles,UploadSingleFile} = require('../Utils/ImageUploader')
+const Products = require('../Models/Products')
 const path = require('path')
+const generateRandom = require('../Utils/RandomUID')
 const Create_Brands = async (req,res)=>{
     const brands = await Brand.find()
-    res.render('Backend/Products/Brands.ejs',{brands})
+    const categories = await Category.find({Status:'Active'})
+    res.render('Backend/Products/Brands.ejs',{brands,categories})
 }
 const Save_Brand = async (req,res)=>{
-    const {BrandName} = req.body
+    const {BrandName,CategoryName} = req.body
     const files = req.files
-    const dirname = require('path').dirname;
-    const absPath = (dirname(__filename)).toString()
-    const splittedPath = absPath.split("\\")
-    const newPath = []
-    for(let i=0;i<splittedPath.length-1;i++){
-        newPath.push(splittedPath[i])
-    }
-    const projectRoot = newPath.join("\\").toString()
-    const fileNameArray = []
-    if(files){
-        Object.keys(files).map((item)=>{
-            fileNameArray.push(files[item].name)
-            // upload the files to the server 
-            const filePath = path.join(projectRoot,'Resources','Uploads',files[item].name)
-            files[item].mv(filePath,(err)=>{
-                if(err){
-                    console.log('Could not upload the images')
-                }else{
-                    console.log('uploaded the image')
-                }
-            })
-        })
-    }else{}
+    const fileNames = UploadFiles(files)
     //check if the brand exists to the database 
     const brand = await Brand.findOne({Brand:Brand})
     if(brand){
         res.status(422).json({
             status:'error',
-            message:'Could Not Upload the Brand',
+            message:'Could Not Create the Brand',
             code:422
         })
     }else{
         const new_Brand = new Brand({
             Brand:BrandName,
-            Image:fileNameArray[0]
+            Image:fileNames[0],
+            Category:CategoryName
         })
         await new_Brand.save()
         res.status(200).json({
@@ -197,7 +180,8 @@ const WorkOn_Category = async(req,res)=>{
     }
 }
 const Add_Product = async (req, res)=>{
-    res.render("Backend/Products/Add_Products.ejs")
+    const categories = await Category.find({Status:'Active'})
+    res.render("Backend/Products/Add_Products.ejs",{categories})
 }
 const Add_Variations = async(req,res)=>{
     const categories = await Category.find({Status:'Active'})
@@ -231,10 +215,7 @@ const WorkOn_Variation = async(req,res)=>{
     let code;
     let message;
     let status;
-    //get the category Id 
     const {VariationID,Action} = req.body 
-    console.log(req.body)
-    //get the categories from the database 
     let variation =  await Variation.findById(VariationID)
     if(!variation){
         code=422
@@ -272,5 +253,69 @@ const WorkOn_Variation = async(req,res)=>{
         })
     }
 }
+const Load_Brands = async (req,res)=>{
+    const {CategoryName} = req.body
+    const cat = await Category.find({Category:CategoryName})
+    if(cat){
+        const brands = await Brand.find({Category:CategoryName,Status:'Active'})
+        if(brands){
+            res.status(200).json({
+                code:200,
+                status:'success',
+                message:brands
+            })
+        }else{
+            res.status(200).json({
+                code:200,
+                status:'success',
+                message:[]
+            })
+        }
+    }else{
+        res.status(422).json({
+            code:422,
+            status:'error',
+            message:'An Unknown error Occurred'
+        })
+    }
+}
+const Upload_Products = async (req,res)=>{
+    const {ProductName,category,brand,Qty,Price,ProductDescription,Variants} = req.body
+    const files = req.files
+    const variantArray = (Variants).split(",")
+    featuredImageName=UploadSingleFile(files.FeaturedImage)
+    const fileNameArray=[]
+    for(let i=0;i<files.OtherImages.length;i++){
+        fileNameArray.push(files.OtherImages[i].name)
+    }
+    const product = new Products({
+        ProductName:ProductName,
+        ProductSlug : (ProductName).toString().split(" ").join("-"),
+        ProductCategory:category,
+        ProductImage:featuredImageName,
+        ProductImages:files.OtherImages?fileNameArray:[],
+        ProductDescription:ProductDescription,
+        SKU:generateRandom(10),
+        Brand:brand,
+        Qty:Qty,
+        Price:Price,
+        ProductVariations:variantArray
+    })
+
+    await product.save()
+    if(product){
+        res.status(200).json({
+            status:'success',
+            code:200,
+            message:`${product.ProductName} Successfully Created. Refreshing...`
+        })
+    }else{
+        res.status(422).json({
+            status:'error',
+            code:422,
+            message:`Could Not Create the Product`
+        })
+    }
+}
 module.exports = {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,
-    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,Add_Variations,WorkOn_Variation}
+    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,Add_Variations,Upload_Products,Load_Brands,WorkOn_Variation}

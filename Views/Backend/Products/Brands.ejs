@@ -111,6 +111,18 @@
                             <input type="text" name="BrandName" id="" class="form-control" placeholder="Enter the Brand Name here">
                         </div>
                         <div class="form-group">
+                          <label for="Category name" class="label-control">Category Name</label>
+                          <select name="CategoryName" id="CategoryName" class="form-control">
+                            <% if(categories) { %>
+                              <% categories.map((category)=>{ %>
+                                <option value="<%= category.Category %>"> <%=category.Category %> </option>
+                              <% }) %>
+                            <%}else{ %>
+                              <option label="--Create Categories--"></option>
+                            <% } %>
+                          </select>
+                      </div>
+                        <div class="form-group">
                             <label for="Brand Icon" class="label-control">Brand Photo</label>
                             <input type="file" name="BrandIcon" id="" class="form-control" accept="image/*">
                         </div>
@@ -127,6 +139,7 @@
                       <thead class="table-dark">
                         <th>image</th>
                         <th>Brand</th>
+                        <th>Category</th>
                         <th>status</th>
                         <th>Actions</th>
                       </thead>
@@ -145,6 +158,7 @@
                                 <tr>
                               <td><img src="Uploads/<%=brand.Image%>" style="height: 30px; width: 30px;border-radius:15px;"/></td>
                               <td><%= brand.Brand %></td>
+                              <td><%= brand.Category %></td>
                               <td>
                                 <% if(brand.Status==='Active'){ %>
                                   <i data-feather="check-square" class="txt-success"></i> 
@@ -189,9 +203,11 @@
         form.addEventListener('submit',async(e)=>{
             e.preventDefault()
             const Brand = form.BrandName.value
+            const CategoryName = form.CategoryName.value
             const BrandIcon = form.BrandIcon.files
             const formData = new FormData()
             formData.append("BrandName",Brand)
+            formData.append("CategoryName",CategoryName)
             for(let i=0;i<BrandIcon.length;i++){
               formData.append("files",BrandIcon[i])
             }

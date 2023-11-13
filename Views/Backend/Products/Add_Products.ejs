@@ -92,27 +92,33 @@
           </div>
           <!-- Container-fluid starts-->
             <div class="row">
+              </div>
                 <div class="col-sm-8 offset-sm-2">
                     <form  id="products">
-                        <div class="alert hidden" id="brandAlert">
-                            <span id="respText"></span>
+                        <div class="alert" id="productAlert">
+                            <span id="productText"></span>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="Product name" class="label-control">Product Name</label>
+                              <div class="form-group">
+                                <label for="Product name" class="label-control">Product Name</label>
+                                    <span class="txt-danger" id="ProductNameError"></span>
                                     <input type="text" name="ProductName" id="" class="form-control" placeholder="Enter the Product Name here">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="Product Category" class="label-control">Product Category</label>
-                                    <select class="form-control" name="categories[]" multiple="multiple" id="productCategory">
-                                        <option value="AL">Alabama</option>
-                                        <option value="WY">Wyoming</option>
-                                        <option value="WY">Coming</option>
-                                        <option value="WY">Hanry Die</option>
-                                        <option value="WY">John Doe</option>
+                                    <span class="txt-danger" id="categoryError"></span>
+                                    <select class="form-control" name="category"  id="productCategory" onchange="loadBrands(this.value)">
+                                        <% if(categories){ %>
+                                          <option label="--Select Categories--"></option>
+                                          <% categories.map((category)=>{ %>
+                                            <option value="<%= category.Category %>"><%= category.Category %></option>
+                                          <% }) %>
+                                          <% }else{ %>
+                                            <option label="--Please Create Categories--"></option>
+                                        <% } %>
                                       </select>
                                 </div>
                             </div>
@@ -121,13 +127,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="Featured Image" class="label-control">Featured Image</label>
-                                    <input type="file" name="FeaturedImage" id="" class="form-control" placeholder="Main Display Image">
+                                    <span class="txt-danger" id="FeaturedImageError"></span>
+                                    <input type="file" name="FeaturedImage" id="" class="form-control" placeholder="Main Display Image" accept="image/*">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="Other Images" class="label-control">Other Images</label>
-                                    <input type="file" name="OtherImages" id="" class="form-control" placeholder="Other Product Images">
+                                    <input type="file" name="OtherImages" id="" class="form-control" placeholder="Other Product Images" multiple="multiple" accept="image/*">
                                 </div>
                             </div>
                         </div> 
@@ -135,21 +142,18 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <div class="form-group">
-                                        <label for="Product Category" class="label-control">Product Brands</label>
-                                        <select class="form-control" name="categories[]" multiple="multiple" id="productBrands">
-                                            <option value="AL">Alabama</option>
-                                            <option value="WY">Wyoming</option>
-                                            <option value="WY">Coming</option>
-                                            <option value="WY">Hanry Die</option>
-                                            <option value="WY">John Doe</option>
-                                          </select>
+                                        <label for="Product Category" class="label-control">Product Brand</label>
+                                        <span class="txt-danger" id="brandError"></span>
+                                        <select class="form-control" name="brand" id="productBrand">
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="Item Quantity" class="label-control">Item Quantity</label>
-                                    <input type="number" name="Qty" id="" class="form-control" placeholder="Item Quantities Here">
+                                    <span class="txt-danger" id="QtyError"></span>
+                                    <input type="number" name="Qty" min="1" class="form-control" placeholder="Item Quantities Here">
                                 </div>
                             </div>
                         </div>
@@ -157,6 +161,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-3 input-group-square">
                                     <label class="form-label">Product Price</label>
+                                    <span class="txt-danger" id="PriceError"></span>
                                     <div class="input-group input-group-air left-radius"><span class="input-group-text">KES</span>
                                       <input class="form-control" type="number" name="Price" placeholder="Price In Ksh ">
                                     </div>
@@ -165,12 +170,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="Category name" class="label-control">Product Variations</label>
-                                    <input type="text" name="CategoryName" id="" class="form-control" placeholder="Enter the Category Name here">
+                                    <span class="txt-danger" id="VariantsError"></span>
+                                    <input type="text" name="Variants" id="" class="form-control" multiple="multiple" placeholder="Enter Variations Separated by a Comma">
                                 </div>
                             </div>
                         </div>                       
                         <div class="form-group">
                             <label for="Category name" class="label-control">Product Description</label>
+                            <span class="txt-danger" id="productDescriptionError"></span>
                             <textarea name="ProductDescription" id="productDescription" cols="30" rows="10"></textarea>
                         </div>
                         <div class="form-group">
@@ -196,19 +203,148 @@
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
     <script>
+      const form =  document.querySelector("form#products")
+      form.addEventListener('submit',async (e)=>{
+        document.querySelector("#ProductNameError").textContent=""
+        document.querySelector("#categoryError").textContent=""
+        document.querySelector("#FeaturedImageError").textContent=""
+        document.querySelector("#brandError").textContent=""
+        document.querySelector("#QtyError").textContent=""
+        document.querySelector("#PriceError").textContent=""
+        document.querySelector("#VariantsError").textContent=""
+        document.querySelector("#productDescriptionError").textContent=""
+        e.preventDefault()
+        const productName = form.ProductName.value
+        const category = form.category.value
+        const FeaturedImage = form.FeaturedImage.files
+        const OtherImages = form.OtherImages.files
+        const brand  = form.brand.value
+        const Qty = form.Qty.value
+        const Price = form.Price.value
+        const Variants = form.Variants.value
+        const ProductDescription = form.ProductDescription.value
+        if(!productName){
+          document.querySelector("#ProductNameError").textContent="First Name is Required"
+        }
+        if(!category){
+          document.querySelector("#categoryError").textContent="Product Category is Required"
+        }
+        if(!FeaturedImage){
+          document.querySelector("#FeaturedImageError").textContent="Featured Image is Required"
+        }
+        if(!brand){
+          document.querySelector("#brandError").textContent="Product Brand is Required"
+        }
+        if(!Qty || Qty<=0){
+          document.querySelector("#QtyError").textContent="Valid Quantity is Required"
+        }
+        if(!Price){
+          document.querySelector("#PriceError").textContent="Product Price is Required"
+        }
+        if(!Variants){
+          document.querySelector("#VariantsError").textContent="Products Variants are required"
+        }
+        if(!ProductDescription){
+          document.querySelector("#productDescriptionError").textContent="Products Description is required"
+        }
+        const formData = new FormData()
+        formData.append("ProductName",productName)
+        formData.append("category",category)
+        formData.append("brand",brand)
+        formData.append("Qty",Qty)
+        formData.append("Price",Price)
+        formData.append("ProductDescription",ProductDescription)
+        //append the variants to the form data 
+        formData.append("Variants",Variants.split(","))
+        //append the files here 
+        for(let i=0;i<FeaturedImage.length;i++){
+              formData.append("FeaturedImage",FeaturedImage[i])
+            }
+        //append other images if they are there
+        if(OtherImages.length>0){
+          for(let i=0;i<OtherImages.length;i++){
+          formData.append("OtherImages",OtherImages[i])
+        }
+        }else{
+          formData.append("OtherImages","")
+        }
+        if(productName&&category&&FeaturedImage&&brand&&Qty&&Price&&Variants&&ProductDescription){
+          const res = await fetch("/Upload-Product",{
+            method:'POST',
+            body:formData
+          })
+          const dataBack = await res.json()
+          if(dataBack.status==='success'){
+            form.reset()
+            document.querySelector("div#productAlert").classList.add('alert-success')
+            document.querySelector("span#productText").textContent = dataBack.message
+            setTimeout(()=>{
+              location.reload()
+            },3000)
+          }else{
+            document.querySelector("div#productAlert").classList.add('alert-danger')
+            document.querySelector("span#productText").textContent = dataBack.message
+          }
+        }else{
+          swal('Form Error', 'Please fill In all the details', 'error');
+        }
+      })
+    </script>
+    <script>
         $(document).ready(function() {
             $('#productCategory').select2({
                     placeholder: "Select Categories"
-            });
-            $('#productBrands').select2({
-                    placeholder: "Select Brands"
             });
         });
         ClassicEditor
             .create( document.querySelector( '#productDescription' ))
             .catch( error => {
                 console.error( error );
-            } );
+        } );
+        const loadBrands = async (cv)=>{
+          const brandSelect=document.querySelector("#productBrand")
+          brandSelect.innerHTML=""
+          let opt = document.createElement("option")
+          opt.setAttribute("label","--Loading Data---")
+          opt.textContent = ""
+          brandSelect.appendChild(opt)
+          //get the brands with this category from the backend 
+          const res = await fetch("/Load-Brands",{
+            method:'POST',
+            body:JSON.stringify({
+              CategoryName:cv
+            }),
+            headers:{
+              'Content-Type':'application/json'
+            }
+          })
+          const dataBack = await res.json()
+          if(dataBack.status==='success'){
+            let data = dataBack.message
+            if(data.length>0){
+              brandSelect.innerHTML=""
+              let opt = document.createElement("option")
+              opt.setAttribute("label","--Select Available Brand---")
+              opt.textContent = ""
+              brandSelect.appendChild(opt)
+              data.map((item)=>{
+                var opt = document.createElement("option")
+                opt.setAttribute("value",item.Brand)
+                let node = document.createTextNode(item.Brand)
+                opt.appendChild(node)
+                brandSelect.appendChild(opt)
+              })
+            }else{
+              brandSelect.innerHTML=""
+              let opt = document.createElement("option")
+              opt.setAttribute("label","--No Brands Available---")
+              opt.textContent = ""
+              brandSelect.appendChild(opt)
+            }
+          }else{
+            swal(dataBack.status, dataBack.message, dataBack.status);
+          }
+        } 
     </script>
     </body>
 </html>
