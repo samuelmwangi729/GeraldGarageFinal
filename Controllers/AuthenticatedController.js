@@ -1,5 +1,6 @@
 const Profiles =require('../Models/Profile')
 const Services = require('../Models/Services')
+const Products = require('../Models/Products')
 const url = require('url')
 const path = require('path')
 const Index = async (req,res)=>{
@@ -11,8 +12,10 @@ const Profile = async (req,res)=>{
     const profile = await Profiles.findOne({Email:userEmail})
     res.render('Backend/Profile.ejs',{profile})
 }
-const All_Products = (req,res)=>{
-    res.render('Backend/All_Products.ejs')
+const All_Products = async (req,res)=>{
+    const products = await Products.find({Status:'Active'})
+    console.log(products)
+    res.render('Backend/All_Products.ejs',{products})
 }
 const All_Services = (req,res)=>{
     res.render('Backend/All_Services.ejs')

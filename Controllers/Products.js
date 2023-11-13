@@ -4,6 +4,7 @@ const Variation = require('../Models/Variations')
 const {UploadFiles,UploadSingleFile} = require('../Utils/ImageUploader')
 const Products = require('../Models/Products')
 const path = require('path')
+const url = require('url')
 const generateRandom = require('../Utils/RandomUID')
 const Create_Brands = async (req,res)=>{
     const brands = await Brand.find()
@@ -317,5 +318,16 @@ const Upload_Products = async (req,res)=>{
         })
     }
 }
+const View_Product_Single = async(req,res)=>{
+    const {query} = url.parse(req.url,true)
+    const productSlug = query.Product
+    const product = await Products.findOne({ProductSlug:productSlug,Status:'Active'})
+    if(product){
+        console.log(product)
+        res.render('Backend/Products/Single.ejs',{product:product})
+    }else{
+        res.redirect("/All-Products")
+    }
+}
 module.exports = {Create_Brands,Save_Brand,Suspend_Brand,Activate_Brand,Delete_Brand,
-    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,Add_Variations,Upload_Products,Load_Brands,WorkOn_Variation}
+    Add_Category,Save_Category,WorkOn_Category,Add_Product,Save_Variations,View_Product_Single,Add_Variations,Upload_Products,Load_Brands,WorkOn_Variation}
