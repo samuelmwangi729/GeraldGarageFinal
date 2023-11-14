@@ -100,12 +100,10 @@ const GetRegDetails = async (req,res)=>{
     let message=""
     let Status=""
     let Code=""
-    console.log(req.body)
     const {FullNames,Email,Password,ConfirmPassword} = req.body
     if(Password===ConfirmPassword){
         const userExists = await User.findOne({EmailAddress:Email})
         if(userExists){
-            console.log('user exists')
             message="The User is Already Registered. Use Different Details"
             event.emit('Registered','error')
         }else{
@@ -120,7 +118,6 @@ const GetRegDetails = async (req,res)=>{
             Code=200
             message="User Successfully Registered"
             event.emit('Registered','success')
-            console.log(user)
         }
     }else{
         message="The passwords Does Not Match"

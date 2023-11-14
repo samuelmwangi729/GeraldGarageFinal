@@ -6,6 +6,26 @@ const CartIndex = async (req,res)=>{
     let cart = await Cart.find({Email:email,Status:'Active'})
     res.render('Backend/Products/Cart.ejs',{cart})
 }
+const Remove_From_Cart = async (req,res)=>{
+    const email = res.locals.user.EmailAddress
+    const {ItemID} = req.body
+    const cart = await Cart.findById(ItemID)
+    if(cart){
+        await Cart.findByIdAndDelete(ItemID)
+        res.status(200).json({
+            status:'success',
+            message:`Product Successfully Removed from Cart.Refreshing ...`,
+            code:200
+        })
+        
+    }else{
+        res.status(422).json({
+            status:'error',
+            message:`Could Not remove the item from Cart`,
+            code:422
+        })
+    }
+}
 const AddCart = async(req,res) =>{
     const userEmail = res.locals.user.EmailAddress
     const {productName,action} = req.body
@@ -92,4 +112,4 @@ const AddCart = async(req,res) =>{
 
 }
 
-module.exports = {CartIndex,AddCart}
+module.exports = {CartIndex,Remove_From_Cart,AddCart}

@@ -14,7 +14,6 @@ const Profile = async (req,res)=>{
 }
 const All_Products = async (req,res)=>{
     const products = await Products.find({Status:'Active'})
-    console.log(products)
     res.render('Backend/All_Products.ejs',{products})
 }
 const All_Services = (req,res)=>{
@@ -113,7 +112,6 @@ const Activate_Service = async (req,res)=>{
     let message ;
     let status ;
     let {ServiceID} = req.body
-    console.log("backend called")
     if(!ServiceID){
         code = 422
         message=`Invalid Data Submitted`
@@ -127,7 +125,6 @@ const Activate_Service = async (req,res)=>{
             code = 200
             message=`${service.Title} Successfully Activated`
             status='success'
-            console.log(service)
         }else{
             code = 422
             message=`Service Could not be  Activated`

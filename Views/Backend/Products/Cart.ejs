@@ -69,6 +69,12 @@
           <!-- Container-fluid starts-->
           <div class="container-fluid">
             <div class="row">
+                <div class="col-sm-8 offset-sm-2">
+                    <div class="alert" id="dataAlert">
+                        <span id="dataText">
+                        </span>
+                    </div>
+                </div>
               <div class="col-sm-12">
                 <div class="card">
                   <div class="card-header pb-0">
@@ -84,8 +90,8 @@
                               <th>Product Name</th>
                               <th>Price</th>
                               <th>Quantity</th>
-                              <th>Action</th>
                               <th>Total</th>
+                              <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -101,8 +107,8 @@
                                       <td>
                                         <%= item.ProductQty %>
                                       </td>
-                                      <td><i data-feather="x-circle"></i></td>
                                       <td><%= item.ProductPrice * item.ProductQty  %></td>
+                                      <td><i data-feather="x-circle" onclick="RemoveFromCart('<%=item._id %>')"></i></td>
                                     </tr>
                                <% }) %>
                             <% }else{ %>
@@ -116,10 +122,12 @@
                                     </td>
                                 </tr>
                                 <% }%>
+                            <% if(cart.length>0){ %>
                             <tr>
                               <td class="text-end" colspan="5"><a class="btn btn-secondary cart-btn-transform" href="product.html">Continue Shopping</a></td>
                               <td><a class="btn btn-success cart-btn-transform" href="checkout.html">Check Out</a></td>
                             </tr>
+                            <% } %>
                           </tbody>
                         </table>
                       </div>
@@ -146,5 +154,29 @@
       </div>
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+        const RemoveFromCart = async(itemID)=>{
+            const res = await fetch("/Remove-Cart-Item",{
+                method:'POST',
+                body:JSON.stringify({
+                    ItemID:itemID
+                }),
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            })
+            const dataBack = await res.json()
+            if(dataBack.status==='success'){
+                document.querySelector("div#dataAlert").classList.add("alert-success")
+                document.querySelector("span#dataText").textContent = dataBack.message
+                setTimeout(()=>{
+                    location.reload()
+                },3000)
+            }else{
+                document.querySelector("div#dataAlert").classList.add("alert-danger")
+            }
+
+        }
+    </script>
   </body>
 </html>
