@@ -287,6 +287,7 @@ const Upload_Products = async (req,res)=>{
     featuredImageName=UploadSingleFile(files.FeaturedImage)
     const fileNameArray=[]
     for(let i=0;i<files.OtherImages.length;i++){
+        featuredImageName=UploadSingleFile(files.OtherImages[i])
         fileNameArray.push(files.OtherImages[i].name)
     }
     const product = new Products({
@@ -294,7 +295,7 @@ const Upload_Products = async (req,res)=>{
         ProductSlug : (ProductName).toString().split(" ").join("-"),
         ProductCategory:category,
         ProductImage:featuredImageName,
-        ProductImages:files.OtherImages?fileNameArray:[],
+        ProductImages:files.OtherImages.length>0?fileNameArray:[''],
         ProductDescription:ProductDescription,
         SKU:generateRandom(10),
         Brand:brand,
@@ -323,7 +324,6 @@ const View_Product_Single = async(req,res)=>{
     const productSlug = query.Product
     const product = await Products.findOne({ProductSlug:productSlug,Status:'Active'})
     if(product){
-        console.log(product)
         res.render('Backend/Products/Single.ejs',{product:product})
     }else{
         res.redirect("/All-Products")

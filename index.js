@@ -5,6 +5,7 @@ const {getAuthUser} = require('./Middlewares/Authentication')
 const homeRoutes = require('./Routes/HomeRoutes')
 const ProtectedRoutes = require('./Routes/AuthRoutes')
 const productRoutes = require('./Routes/ProductRoutes')
+const shopRoutes = require('./Routes/ShopRoutes')
 // create an express app 
 const app = express()
 //set the view engine 
@@ -27,6 +28,7 @@ app.set('view engine','ejs')
 app.set('views','Views')
 //import the home routes
 app.use(homeRoutes)
+app.use(shopRoutes)
 app.use(productRoutes)
 app.use(ProtectedRoutes)
 app.use(express.static('Resources'))

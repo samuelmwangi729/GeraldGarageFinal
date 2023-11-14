@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../../Layouts/Backend/Header.ejs') %>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrappeRr"><a href="index.html">
+                <img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt="">
+                <img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt="">
+            </a></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <!-- Page Sidebar Ends-->
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>Cart</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Index</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="card">
+                  <div class="card-header pb-0">
+                    <h3>Cart</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="order-history table-responsive wishlist">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Product</th>
+                              <th>Product Name</th>
+                              <th>Price</th>
+                              <th>Quantity</th>
+                              <th>Action</th>
+                              <th>Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% if(cart.length>0){ %>
+                                <% cart.map((item)=>{ %>
+                                    <tr>
+                                      <td><img class="img-fluid img-40" src="Uploads/<%=item.FeaturedImage %>" alt="#"></td>
+                                      <td>
+                                        <div class="product-name"><a href="javascript:void(0)"> 
+                                            <h6><%= item.Product %></h6></a></div>
+                                      </td>
+                                      <td><%= item.ProductPrice %></td>
+                                      <td>
+                                        <%= item.ProductQty %>
+                                      </td>
+                                      <td><i data-feather="x-circle"></i></td>
+                                      <td><%= item.ProductPrice * item.ProductQty  %></td>
+                                    </tr>
+                               <% }) %>
+                            <% }else{ %>
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="alert alert-warning">
+                                            <h5 class="text-center">
+                                                No Items already Added to Cart. <a href="/All-Products">Shop for Items Here</a>
+                                            </h5>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }%>
+                            <tr>
+                              <td class="text-end" colspan="5"><a class="btn btn-secondary cart-btn-transform" href="product.html">Continue Shopping</a></td>
+                              <td><a class="btn btn-success cart-btn-transform" href="checkout.html">Check Out</a></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../../Layouts/Backend/Scripts.ejs') %>
+  </body>
+</html>
