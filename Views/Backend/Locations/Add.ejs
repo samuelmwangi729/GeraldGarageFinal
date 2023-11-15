@@ -274,7 +274,6 @@
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
     <script>
       const WorkOnTown = async(t,a)=>{
-        //post the data to the backend 
         const res = await fetch("/Work-On-Town",{
           method:'POST',
           body:JSON.stringify({
@@ -294,8 +293,6 @@
         }
       }
       const WorkOnCounty = async(c,a)=>{
-        //post the data to the backend 
-        alert(a)
         const res = await fetch("/Work-On-County",{
           method:'POST',
           body:JSON.stringify({
