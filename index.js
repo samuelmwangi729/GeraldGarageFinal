@@ -6,6 +6,7 @@ const homeRoutes = require('./Routes/HomeRoutes')
 const ProtectedRoutes = require('./Routes/AuthRoutes')
 const productRoutes = require('./Routes/ProductRoutes')
 const shopRoutes = require('./Routes/ShopRoutes')
+const LocationRouter = require('./Routes/LocationRoutes')
 // create an express app 
 const app = express()
 //set the view engine 
@@ -31,6 +32,7 @@ app.use(homeRoutes)
 app.use(shopRoutes)
 app.use(productRoutes)
 app.use(ProtectedRoutes)
+app.use(LocationRouter)
 app.use(express.static('Resources'))
 //render the not found page 
 app.use((req,res)=>{

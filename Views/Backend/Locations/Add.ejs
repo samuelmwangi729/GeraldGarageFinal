@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../../Layouts/Backend/Header.ejs') %>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <form class="form-inline search-full col" action="#" method="get">
+            <div class="form-group w-100">
+              <div class="Typeahead Typeahead--twitterUsers">
+                <div class="u-posRelative">
+                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
+                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
+                </div>
+                <div class="Typeahead-menu"></div>
+              </div>
+            </div>
+          </form>
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <!-- Page Sidebar Ends-->
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>Add Locations</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Index</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="row">
+            <div class="col-sm-6">
+                <div class="form bg-white p-2">
+                  <form  id="addCountry">
+                    <fieldset>
+                        <legend>
+                            <h3 class="text-center">
+                                Add County
+                            </h3>
+                        </legend>
+                        <div class="form-group">
+                          <span class="text-danger" id="countyError"></span>
+                            <label for="Country" class="label-control">County</label>
+                            <input type="text" name="County" id="county" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-block btn-success">
+                                Add County
+                            </button>
+                        </div>
+                    </fieldset>
+                  </form>
+                </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form bg-white p-2">
+                <form  id="addTown">
+                  <fieldset>
+                      <legend>
+                          <h3 class="text-center">
+                              Add Town
+                          </h3>
+                      </legend>
+                      <div class="form-group">
+                        <span class="text-danger" id="countyTownError"></span>
+                          <label for="Country" class="label-control">County</label>
+                          <select name="CountyTown" id="county" class="form-control">
+                            <option label="--Select County--"></option>
+                            <% if(counties.length>0){%>
+                              <% counties.map((county)=>{ %>
+                                <option value="<%=county.CountyName %>"><%= county.CountyName %></option>
+                              <% }) %>
+                            <% }else{%>
+                              <option label="--No Counties Available--"></option>
+                            <% }%>
+                          </select>
+                      </div>
+                      <div class="form-group">
+                        <span class="text-danger" id="errorTown"></span>
+                          <label for="Country" class="label-control">Town</label>
+                          <input type="text" name="Town" id="town" class="form-control" placeholder="Enter the Town Name">
+                      </div>
+                      <div class="form-group">
+                        <span class="text-danger" id="errorfeesTown"></span>
+                          <label for="Shipping Fees" class="label-control">Shipping Fees</label>
+                          <input type="number" min="100" name="ShippingFees" id="town" class="form-control" placeholder="Minimum Shipping Fees is 100">
+                      </div>
+                      <div class="form-group">
+                          <button class="btn btn-block btn-success">
+                              Add Town
+                          </button>
+                      </div>
+                  </fieldset>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="County bg-white">
+                <h4 class="text-center text-primary">
+                  Available Counties
+                </h4>
+                <div class="card">
+                  <div class="card-body">
+                    <table class="table table-hover table-bordered">
+                      <thead>
+                        <tr>
+                          <th>County</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if(counties.length>0){ %>
+                          <% counties.forEach((county)=>{ %>
+                            <tr>
+                              <td><%= county.CountyName %></td>
+                              <td class="text-center">
+                                <% if(county.status==='Active'){ %>
+                                  <i data-feather="check-square" class="text-success"></i>
+                               <% }else{ %>
+                                <i data-feather="x-square" class="text-danger"></i>
+                                <% } %>
+                              </td>
+                              <td>
+                                <% if(county.status==='Active'){ %>
+                                  <span class="badge badge-primary" onclick="WorkOnCounty('<%= county.CountyName %>','Suspend')">Suspend</span>
+                                  <% }else{ %>
+                                    <span class="badge badge-success" onclick="WorkOnCounty('<%= county.CountyName %>','Activate')">Activate</span>
+                                <% } %>
+                                <span class="badge badge-danger" onclick="WorkOnCounty('<%= county.CountyName %>','Delete')">Delete</span>
+                              </td>
+                            </tr>
+                          <% }) %>
+                       <% }else{ %>
+                        <tr>
+                          <td colspan="3">
+                            <div class="alert alert-danger">
+                              <strong>
+                                No Counties Available
+                              </strong>
+                            </div>
+                          </td>
+                        </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="County bg-white">
+                  <h4 class="text-center text-primary">
+                    Available Towns
+                  </h4>
+                  <div class="card">
+                    <div class="card-body">
+                      <table class="table table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th>County</th>
+                            <th>Town</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if(towns.length>0){ %>
+                            <% towns.forEach((town)=>{ %>
+                              <tr>
+                                <td><%= town.County %></td>
+                                <td><%= town.TownName %></td>
+                                <td class="text-center">
+                                  <% if(town.status==='Active'){ %>
+                                    <i data-feather="check-square" class="text-success"></i>
+                                 <% }else{ %>
+                                  <i data-feather="x-square" class="text-danger"></i>
+                                  <% } %>
+                                </td>
+                                <td>
+                                  <% if(town.status==='Active'){ %>
+                                    <span class="badge badge-primary" onclick="WorkOnTown('<%= town.TownName %>','Suspend')">Suspend</span>
+                                 <% }else{ %>
+                                  <span class="badge badge-success" onclick="WorkOnTown('<%= town.TownName %>','Activate')">Activate</span>
+                                  <% } %>
+                                  <span class="badge badge-danger" onclick="WorkOnTown('<%= town.TownName %>','Delete')">Delete</span>
+                                </td>
+                              </tr>
+                            <% }) %>
+                         <% }else{ %>
+                          <tr>
+                            <td colspan="4">
+                              <div class="alert alert-danger">
+                                <strong>
+                                  No towns Available
+                                </strong>
+                              </div>
+                            </td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+      const WorkOnTown = async(t,a)=>{
+        //post the data to the backend 
+        const res = await fetch("/Work-On-Town",{
+          method:'POST',
+          body:JSON.stringify({
+            townName:t,
+            Action:a
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        swal(dataBack.status, dataBack.message, dataBack.status);
+        if(dataBack.status==='success'){
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }
+      }
+      const WorkOnCounty = async(c,a)=>{
+        //post the data to the backend 
+        alert(a)
+        const res = await fetch("/Work-On-County",{
+          method:'POST',
+          body:JSON.stringify({
+            county:c,
+            Action:a
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        swal(dataBack.status, dataBack.message, dataBack.status);
+        if(dataBack.status==='success'){
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }
+      }
+      const form = document.querySelector("form#addCountry")
+      const errorSpan = document.querySelector("span#countyError")
+      form.addEventListener('submit',async (e)=>{
+        e.preventDefault()
+        const county = form.County.value
+        console.log(county)
+        if(!county){
+          errorSpan.textContent = "The county name is required"
+          return;
+        }
+        const res = await fetch("/Add-County",{
+          method:'POST',
+          body:JSON.stringify({
+            county:county
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack =await res.json()
+        form.reset()
+        swal(dataBack.status, dataBack.message, dataBack.status);
+        if(dataBack.status==='success'){
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }
+      })
+    </script>
+    <script>
+      const townform = document.querySelector("form#addTown")
+      const errorcountyTown = document.querySelector("#countyTownError")
+      const errorTown = document.querySelector("#errorTown")
+      const errorfeesTown = document.querySelector("#errorfeesTown")
+      townform.addEventListener('submit',async (e)=>{
+        errorcountyTown.textContent=""
+        errorTown.textContent=""
+        errorfeesTown.textContent=""
+        e.preventDefault()
+        const County = townform.CountyTown.value
+        const Town= townform.Town.value
+        const  ShippingFees= townform.ShippingFees.value
+        if(!County){
+          errorcountyTown.textContent="The county field is required"
+        }
+        if(!Town){
+          errorTown.textContent="The Town field is required"
+        }
+        if(!ShippingFees){
+          errorfeesTown.textContent="The ShippingFees field is required"
+          return;
+        }
+        const res = await fetch("/Add-Town",{
+          method:'POST',
+          body:JSON.stringify({
+            County:County,
+            town:Town,
+            Fees:ShippingFees,
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack =await res.json()
+        form.reset()
+        swal(dataBack.status, dataBack.message, dataBack.status);
+        if(dataBack.status==='success'){
+          setTimeout(()=>{
+            location.reload()
+          },3000)
+        }
+      })
+    </script>
+  </body>
+</html>

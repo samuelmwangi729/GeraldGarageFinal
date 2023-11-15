@@ -1,6 +1,35 @@
 const url = require('url')
+const {County,Town} = require('../Models/Locations')
 const Products = require('../Models/Products')
 const Cart = require('../Models/Cart')
+const Shipping = require('../Models/Shipping')
+const InitiatePay = require('../Utils/Payments')
+const generateRandom = require('../Utils/RandomUID')
+const Pay = async (req,res)=>{
+    const OrderId = generateRandom(8)
+    const email = res.locals.user.EmailAddress
+    let cart = await Cart.find({Email:email,Status:'Active'})
+    let sum =0;
+    for(let i=0;i<cart.length;i++){
+        sum=sum+cart[i].TotalPay
+        cart[i].OrderId = OrderId
+        await cart[i].save()
+    }
+    const shipping = await Shipping.findOne({Email:email})
+    const shippingFees = shipping.Fees
+    let totalPay= sum + shippingFees
+    InitiatePay(res,OrderId,'CheckOut','Payment for Goods Plus Delivery',totalPay,email)
+}
+const Checkout = async(req, res)=>{
+    const email = res.locals.user.EmailAddress
+    let cart = await Cart.find({Email:email,Status:'Active'})
+    let sum =0;
+    for(let i=0;i<cart.length;i++){
+        sum=sum+cart[i].TotalPay
+    }
+    console.log("check out")
+    res.render('Backend/Products/Checkout.ejs',{cart:cart,totalPrice:sum})
+}
 const CartIndex = async (req,res)=>{
     const email = res.locals.user.EmailAddress
     let cart = await Cart.find({Email:email,Status:'Active'})
@@ -111,5 +140,9 @@ const AddCart = async(req,res) =>{
     }
 
 }
-
-module.exports = {CartIndex,Remove_From_Cart,AddCart}
+const Locations = async(req,res)=>{
+    const county = await County.find()
+    const towns = await Town.find()
+    res.render('Backend/Locations/Add.ejs',{counties:county,towns:towns})
+}
+module.exports = {CartIndex,Remove_From_Cart,AddCart,Checkout,Pay,Locations}

@@ -26,6 +26,10 @@ const CartSchema =  new Schema({
         required:[true,'This field is required'],
         default:'Null'
     },
+    OrderId:{
+        type:String,
+        default:''
+    },
     Status:{
         type:String,
         enum:['CheckedOut','Active','Abandoned','Wishlist'],
