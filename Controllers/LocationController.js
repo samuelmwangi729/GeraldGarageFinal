@@ -149,4 +149,23 @@ const WorkOnCounty = async (req, res)=>{
 
     }
 }
-module.exports = {AddCounty,AddTown,WorkOnTown,WorkOnCounty}
+const GetTowns = async (req,res)=>{
+    const {countyName} = req.body
+    //get the towns 
+    const towns = await Town.find({County:countyName,status:'Active'})
+    console.log(towns)
+    if(towns){
+        res.status(200).json({
+            status:'success',
+            message:towns,
+            code:200
+        })
+    }else{
+        res.status(422).json({
+            status:'error',
+            message:'Could not fetch data',
+            code:422
+        })
+    }
+}
+module.exports = {AddCounty,AddTown,WorkOnTown,GetTowns,WorkOnCounty}

@@ -21,7 +21,23 @@ const ProfileSchema = new Schema({
     Residence:{
         type:String,
         required:[true,'This field is required']
-    }
+    },
+    Address:{
+        type:String,
+        default:''
+    },
+    County:{
+        type:String,
+        default:''
+    },
+    Town:{
+        type:String,
+        default:''
+    },
+    PostalCode:{
+        type:String,
+        default:''
+    },
 },{timestamps:true})
 
 const Profile = model('Profile',ProfileSchema)

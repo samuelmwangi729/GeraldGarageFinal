@@ -87,16 +87,6 @@
                     <form>
                       <div class="row">
                         <div class="mb-3 col-sm-6">
-                          <label for="inputEmail4">First Name</label>
-                          <input class="form-control" id="inputEmail4" type="email">
-                        </div>
-                        <div class="mb-3 col-sm-6">
-                          <label for="inputPassword4">Last Name</label>
-                          <input class="form-control" id="inputPassword4" type="password">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="mb-3 col-sm-6">
                           <label for="phonenumber">Phone</label>
                           <input class="form-control" id="phonenumber" type="number">
                         </div>
@@ -106,33 +96,32 @@
                         </div>
                       </div>
                       <div class="mb-3">
-                        <label for="inputState">Country</label>
-                        <select class="form-control" id="inputState">
-                          <option selected="">Choose...</option>
-                          <option>...</option>
+                        <label for="inputState">County</label>
+                        <select class="form-control" id="inputState" onchange="getTowns(this.value)">
+                          <option label="---Choose Your County--"></option>
+                          <% if(counties){ %>
+                            <% counties.forEach((county)=>{%>
+                              <option value="<%=county.CountyName %>"><%=county.CountyName %></option>
+                            <% })%>
+                          <%}else{ %>
+                            <option label="--No Data Found--"></option>
+                          <% } %>
                         </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="inputCity">Town</label>
+                        <select name="Town" id="towns" class="form-control"></select>
                       </div>
                       <div class="mb-3">
                         <label for="inputAddress5">Address</label>
                         <input class="form-control" id="inputAddress5" type="text">
                       </div>
                       <div class="mb-3">
-                        <label for="inputCity">Town/City</label>
-                        <input class="form-control" id="inputCity" type="text">
-                      </div>
-                      <div class="mb-3">
-                        <label for="inputAddress2">State/Country</label>
-                        <input class="form-control" id="inputAddress2" type="text">
-                      </div>
-                      <div class="mb-3">
                         <label for="inputAddress6">Postal Code</label>
                         <input class="form-control" id="inputAddress6" type="number">
                       </div>
-                      <div class="mb-3">
-                        <div class="form-check">
-                          <input class="form-check-input" id="gridCheck" type="checkbox">
-                          <label class="form-check-label" for="gridCheck">Check me out</label>
-                        </div>
+                      <div class="row">
+                        <button class="btn btn-success p-2" type="submit">Update Details</button>
                       </div>
                     </form>
                   </div>
@@ -145,41 +134,26 @@
                           </div>
                         </div>
                         <ul class="qty">
-                          <li>Pink Slim Shirt × 1 <span>$25.10</span></li>
-                          <li>Slim Fit Jeans × 1 <span>$555.00</span></li>
+                          <% if(cart){ %>
+                            <% cart.forEach((item)=>{ %>
+                              <li> <%= item.Product %>  <%= item.ProductQty %> x  <%= item.ProductPrice %><span> KES.<%= item.TotalPay %></span></li>
+                           <% }) %>
+                          <%} %>
                         </ul>
                         <ul class="sub-total">
-                          <li>Subtotal <span class="count">$380.10</span></li>
-                          <li class="shipping-class">Shipping
+                          <li>Subtotal <span class="count">KES.<%=totalPrice %></span></li>
+                          <li class="shipping-class">Shipping Fees
                             <div class="shopping-checkout-option">
                               <label class="d-block" for="chk-ani">
-                                <input class="checkbox_animated" id="chk-ani" type="checkbox" checked="">Option 1
-                              </label>
-                              <label class="d-block" for="chk-ani1">
-                                <input class="checkbox_animated" id="chk-ani1" type="checkbox">Option 2
+                                <span id="ShippingFees">KES. 5900</span>
                               </label>
                             </div>
                           </li>
                         </ul>
                         <ul class="sub-total total">
-                          <li>Total <span class="count">$620.00</span></li>
+                          <li>Total <span class="count" id="shippingTotal">KES. 620.00</span></li>
                         </ul>
-                        <div class="animate-chk">
-                          <div class="row">
-                            <div class="col">
-                              <label class="d-block" for="edo-ani">
-                                <input class="radio_animated" id="edo-ani" type="radio" name="rdo-ani" checked="" data-original-title="" title="">Check Payments
-                              </label>
-                              <label class="d-block" for="edo-ani1">
-                                <input class="radio_animated" id="edo-ani1" type="radio" name="rdo-ani" data-original-title="" title="">Cash On Delivery
-                              </label>
-                              <label class="d-block" for="edo-ani2">
-                                <input class="radio_animated" id="edo-ani2" type="radio" name="rdo-ani" checked="" data-original-title="" title="">PayPal<img class="img-paypal img-fluid" src="../assets/images/checkout/paypal.png" alt="">
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="order-place"><a class="btn btn-primary" href="email-order-success.html">Place Order  </a></div>
+                        <div class="order-place"><a class="btn btn-primary" href="/Pay">Place Order</a></div>
                       </div>
                     </div>
                   </div>
@@ -203,5 +177,37 @@
       </div>
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
+    <script>
+      const getTowns = async (county)=>{
+        const townSel = document.querySelector("select#towns")
+        const opt = document.createElement('option')
+        opt.setAttribute('label','--Loading Data--')
+        townSel.appendChild(opt)
+        const res = await fetch("/Get-Towns",{
+          method:'POST',
+          body:JSON.stringify({
+            countyName:county
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        if(dataBack.status==='success'){
+          townSel.innerHTML=""
+          dataBack.message.forEach((town)=>{
+            const opt = document.createElement('option')
+            opt.setAttribute('value',town.TownName)
+            let node = document.createTextNode(town.TownName)
+            opt.appendChild(node)
+            townSel.appendChild(opt)
+          })
+        }else{
+          const opt = document.createElement('option')
+          opt.setAttribute('label',dataBack.message)
+          townSel.appendChild(opt)
+        }
+      }
+    </script>
   </body>
 </html>

@@ -27,8 +27,8 @@ const Checkout = async(req, res)=>{
     for(let i=0;i<cart.length;i++){
         sum=sum+cart[i].TotalPay
     }
-    console.log("check out")
-    res.render('Backend/Products/Checkout.ejs',{cart:cart,totalPrice:sum})
+    const counties = await County.find({status:'Active'})
+    res.render('Backend/Products/Checkout.ejs',{cart:cart,totalPrice:sum,counties:counties})
 }
 const CartIndex = async (req,res)=>{
     const email = res.locals.user.EmailAddress
