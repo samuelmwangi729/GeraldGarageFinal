@@ -12,7 +12,7 @@ dbConnected.on('Connection',(conStatus)=>{
     }
 })
 const ConnectToDB = async ()=>{
-    const dbURL = process.env.ConnectionString
+    const dbURL = process.env.ConnectionStringLocal
         await mongoose.connect(dbURL)
         .then(response=>{
             dbConnected.emit('Connection','success')

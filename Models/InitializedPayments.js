@@ -43,8 +43,8 @@ const InitializedPaymentsSchema = new Schema({
     },
     PaymentType:{
         type:String,
-        enum:['Order','Membership','Bids','Others'],
-        default:'Order'
+        enum:['Services','Membership','Others','CheckOut'],
+        default:'CheckOut'
     },
     AmountPaid : {
         type:String,

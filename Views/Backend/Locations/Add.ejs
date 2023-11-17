@@ -210,6 +210,7 @@
                           <tr>
                             <th>County</th>
                             <th>Town</th>
+                            <th>Fees</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
@@ -220,6 +221,7 @@
                               <tr>
                                 <td><%= town.County %></td>
                                 <td><%= town.TownName %></td>
+                                <td>KES<%= town.ShippingFee %></td>
                                 <td class="text-center">
                                   <% if(town.status==='Active'){ %>
                                     <i data-feather="check-square" class="text-success"></i>

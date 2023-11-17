@@ -5,6 +5,7 @@ const Cart = require('../Models/Cart')
 const Shipping = require('../Models/Shipping')
 const InitiatePay = require('../Utils/Payments')
 const generateRandom = require('../Utils/RandomUID')
+const Profile = require('../Models/Profile')
 const Pay = async (req,res)=>{
     const OrderId = generateRandom(8)
     const email = res.locals.user.EmailAddress
@@ -15,20 +16,54 @@ const Pay = async (req,res)=>{
         cart[i].OrderId = OrderId
         await cart[i].save()
     }
-    const shipping = await Shipping.findOne({Email:email})
-    const shippingFees = shipping.Fees
-    let totalPay= sum + shippingFees
-    InitiatePay(res,OrderId,'CheckOut','Payment for Goods Plus Delivery',totalPay,email)
+    const profile = await Profile.findOne({Email:email})
+    const profileCounty = profile.County
+    const profileTown = profile.Town
+    //get the locations from the locations models
+    const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
+    let totalPay= sum + locations.ShippingFee
+    InitiatePay(res,OrderId,'CheckOut','Payment for Goods Plus Delivery',10,email)
 }
 const Checkout = async(req, res)=>{
     const email = res.locals.user.EmailAddress
+    const profile = await Profile.findOne({Email:email})
     let cart = await Cart.find({Email:email,Status:'Active'})
     let sum =0;
     for(let i=0;i<cart.length;i++){
         sum=sum+cart[i].TotalPay
     }
     const counties = await County.find({status:'Active'})
-    res.render('Backend/Products/Checkout.ejs',{cart:cart,totalPrice:sum,counties:counties})
+    res.render('Backend/Products/Checkout.ejs',{cart:cart,totalPrice:sum,counties:counties,profile:profile})
+}
+const Save_CheckOut_Details = async(req,res)=>{
+    const {phoneNumber,emailAddress,county,town,residence,postalCode} = req.body
+    const userEmail = res.locals.user.EmailAddress
+    const profile = await Profile.findOne({Email:userEmail})
+    if(profile){
+        profile.Email=userEmail,
+        profile.PhoneNumber=phoneNumber,
+        profile.Address=residence,
+        profile.County=county,
+        profile.Town=town.split(",")[0],
+        profile.PostalCode=postalCode,
+        await profile.save()
+    }else{
+        //create the profile
+        const profile = new Profile({
+            Email:userEmail,
+            PhoneNumber:phoneNumber,
+            Address:residence,
+            County:county,
+            Town:town,
+            PostalCode:postalCode,
+        })
+        await profile.save()
+    }
+    res.status(200).json({
+        status:'success',
+        message:`Shipping details Saved`,
+        code:200
+    })
 }
 const CartIndex = async (req,res)=>{
     const email = res.locals.user.EmailAddress
@@ -145,4 +180,7 @@ const Locations = async(req,res)=>{
     const towns = await Town.find()
     res.render('Backend/Locations/Add.ejs',{counties:county,towns:towns})
 }
-module.exports = {CartIndex,Remove_From_Cart,AddCart,Checkout,Pay,Locations}
+const getCallBackData = async(req,res)=>{
+    console.log(req.body)
+}
+module.exports = {CartIndex,Remove_From_Cart,AddCart,Checkout,Pay,Save_CheckOut_Details,Locations,Pay,getCallBackData}

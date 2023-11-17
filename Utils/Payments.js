@@ -50,6 +50,7 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
         });
         resp.on('end', async () => {
             const ed = JSON.parse(data)
+            console.log(ed)
             if(ed.status){
                 const initLog = await InitPay.create({
                     InitStatus:ed.status,
@@ -68,7 +69,7 @@ const InitiatePay = async (res,PaymentID,PaymentType,Reason,Amount,userEmail)=>{
                 }
             }else{
                 if(PaymentType==='CheckOut'){
-                    res.redirect('/All-Products')
+                    res.redirect('/Checkout')
                 }else{
                     res.redirect("/Dashboard")
                 }

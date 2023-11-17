@@ -84,20 +84,23 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-xl-6 col-sm-12">
-                    <form>
+                    <form id="checkOutForm">
                       <div class="row">
                         <div class="mb-3 col-sm-6">
+                          <span class="text-danger text-center" id="phoneError"></span>
                           <label for="phonenumber">Phone</label>
-                          <input class="form-control" id="phonenumber" type="number">
+                          <input class="form-control" name="phone" type="number" <%if(profile) {%> value="<%= profile.PhoneNumber %>"<% }%>>
                         </div>
                         <div class="mb-3 col-sm-6">
+                          <span class="text-danger text-center" id="emailError"></span>
                           <label for="inputPassword7">Email Address</label>
-                          <input class="form-control" id="inputPassword7" type="password">
+                          <input class="form-control" name="email" type="email" <%if(profile) {%> value="<%= profile.Email %>"<% }%>>
                         </div>
                       </div>
                       <div class="mb-3">
+                        <span class="text-danger text-center" id="countyError"></span>
                         <label for="inputState">County</label>
-                        <select class="form-control" id="inputState" onchange="getTowns(this.value)">
+                        <select class="form-control" name="county" onchange="getTowns(this.value)">
                           <option label="---Choose Your County--"></option>
                           <% if(counties){ %>
                             <% counties.forEach((county)=>{%>
@@ -109,21 +112,20 @@
                         </select>
                       </div>
                       <div class="mb-3">
+                        <span class="text-danger text-center" id="townError"></span>
                         <label for="inputCity">Town</label>
-                        <select name="Town" id="towns" class="form-control"></select>
+                        <select name="town" id="towns" class="form-control" onchange="getShipping(this.value)"></select>
                       </div>
                       <div class="mb-3">
+                        <span class="text-danger text-center" id="addressError"></span>
                         <label for="inputAddress5">Address</label>
-                        <input class="form-control" id="inputAddress5" type="text">
+                        <input class="form-control" name="address" type="text" <%if(profile) {%> value="<%= profile.Address %>"<% }%>>
                       </div>
                       <div class="mb-3">
+                        <span class="text-danger text-center" id="postalError"></span>
                         <label for="inputAddress6">Postal Code</label>
-                        <input class="form-control" id="inputAddress6" type="number">
+                        <input class="form-control" name="postal" type="number" <%if(profile) {%> value="<%= profile.PostalCode %>"<% }%>>
                       </div>
-                      <div class="row">
-                        <button class="btn btn-success p-2" type="submit">Update Details</button>
-                      </div>
-                    </form>
                   </div>
                   <div class="col-xl-6 col-sm-12">
                     <div class="checkout-details">
@@ -136,24 +138,28 @@
                         <ul class="qty">
                           <% if(cart){ %>
                             <% cart.forEach((item)=>{ %>
-                              <li> <%= item.Product %>  <%= item.ProductQty %> x  <%= item.ProductPrice %><span> KES.<%= item.TotalPay %></span></li>
+                              <li> <%= item.Product %>  <%= item.ProductQty %> x  <%= item.ProductPrice %><span> KES.<%= (item.TotalPay).toLocaleString("en") %></span></li>
                            <% }) %>
                           <%} %>
                         </ul>
                         <ul class="sub-total">
-                          <li>Subtotal <span class="count">KES.<%=totalPrice %></span></li>
+                          <li>Subtotal <span class="count" id="cartTotal" data-total="<%=totalPrice %>">KES.<%=totalPrice.toLocaleString("en") %></span></li>
                           <li class="shipping-class">Shipping Fees
                             <div class="shopping-checkout-option">
                               <label class="d-block" for="chk-ani">
-                                <span id="ShippingFees">KES. 5900</span>
+                                <span id="ShippingFees">KES. 0</span>
                               </label>
                             </div>
                           </li>
                         </ul>
                         <ul class="sub-total total">
-                          <li>Total <span class="count" id="shippingTotal">KES. 620.00</span></li>
+                          <li>Total <span class="count" id="shippingTotal">KES. 0</span></li>
                         </ul>
-                        <div class="order-place"><a class="btn btn-primary" href="/Pay">Place Order</a></div>
+                        <div class="order-place">
+                          <button class="btn btn-primary" type="submit">Pay Now</button>
+                        </div>
+                        </form>
+
                       </div>
                     </div>
                   </div>
@@ -178,8 +184,77 @@
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
     <script>
+      const form = document.querySelector("form#checkOutForm")
+      const phoneError=document.querySelector("span#phoneError")
+      const emailError=document.querySelector("span#emailError")
+      const countyError=document.querySelector("span#countyError")
+      const townError=document.querySelector("span#townError")
+      const addressError=document.querySelector("span#addressError")
+      const postalError=document.querySelector("span#postalError")
+      form.addEventListener('submit',async (e)=>{
+        phoneError.textContent=""
+        emailError.textContent=""
+        countyError.textContent=""
+        townError.textContent=""
+        addressError.textContent=""
+        postalError.textContent=""
+        e.preventDefault()
+        const phone = form.phone.value
+        const email = form.email.value
+        const county = form.county.value
+        const town = form.town.value
+        const address = form.address.value
+        const postal = form.postal.value
+        if(!phone){
+          phoneError.textContent="The Phone Number is required"
+        }
+        if(!email){
+          emailError.textContent="The email is required"
+        }
+        if(!county){
+          countyError.textContent="The county is required"
+          return;
+        }
+        if(!town){
+          townError.textContent="The town is required"
+          return;
+        }
+        if(!address){
+          addressError.textContent="The address is required"
+        }
+        if(!postal){
+          postalError.textContent="The postal Code is required"
+          return;
+        }
+        const res = await fetch("/Save-Checkout-Details",{
+          method:'POST',
+          body:JSON.stringify({
+            "phoneNumber":phone,
+            "emailAddress":email,
+            "county":county,
+            "town":town,
+            "residence":address,
+            "postalCode":postal
+          }),
+          headers:{
+            'Content-Type':'application/json'
+          }
+        })
+        const dataBack = await res.json()
+        form.reset()
+        swal(dataBack.status, dataBack.message, dataBack.status);
+        if(dataBack.status==='success'){
+          setTimeout(()=>{
+            //redirect the user to pay page 
+            location.href = "/Pay"
+          },3000)
+        }
+      })
+    </script>
+    <script>
       const getTowns = async (county)=>{
         const townSel = document.querySelector("select#towns")
+        townSel.innerHTML=""
         const opt = document.createElement('option')
         opt.setAttribute('label','--Loading Data--')
         townSel.appendChild(opt)
@@ -194,10 +269,9 @@
         })
         const dataBack = await res.json()
         if(dataBack.status==='success'){
-          townSel.innerHTML=""
           dataBack.message.forEach((town)=>{
             const opt = document.createElement('option')
-            opt.setAttribute('value',town.TownName)
+            opt.setAttribute('value',[town.TownName,town.ShippingFee])
             let node = document.createTextNode(town.TownName)
             opt.appendChild(node)
             townSel.appendChild(opt)
@@ -207,6 +281,15 @@
           opt.setAttribute('label',dataBack.message)
           townSel.appendChild(opt)
         }
+      }
+      const getShipping = (data)=>{
+        const shippingFees = data.split(",")[1]
+        document.querySelector("span#ShippingFees").textContent=`KES. ${(shippingFees).toLocaleString("en")}`
+        updateTotalAmount(shippingFees)
+      }
+      const updateTotalAmount = shippingFee =>{
+        cartTotal = parseInt(document.querySelector("span#cartTotal").getAttribute("data-total"))
+        document.querySelector("span#shippingTotal").textContent = `KES. ${(cartTotal + parseInt(shippingFee)).toLocaleString("en")}`
       }
     </script>
   </body>
