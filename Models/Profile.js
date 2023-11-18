@@ -16,11 +16,13 @@ const ProfileSchema = new Schema({
     },
     Age:{
         type:Number,
-        required:[true,'Age is required']
+        required:[true,'Age is required'],
+        default:0
     },
     Residence:{
         type:String,
-        required:[true,'This field is required']
+        required:[true,'This field is required'],
+        default:''
     },
     Address:{
         type:String,
