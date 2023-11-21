@@ -11,6 +11,8 @@ const checkAuth = (req,res,next)=>{
         //verify the token 
         token.verify(tokenExists,process.env.TOKEN_SECRET_KEY,(err,decodedToken)=>{
             if(err){
+                //delete the token 
+                res.cookie('jwt','',{httpOnly:true,maxAge:10})
                 res.redirect("/")
             }else{
                 next()
@@ -27,6 +29,7 @@ const getAuthUser = async (req,res,next)=>{
         //verify the token
         token.verify(tokenExists,process.env.TOKEN_SECRET_KEY,async (err,decodedToken)=>{
             if(err){
+                console.log("does not exist")
                 res.locals.user=null
                 next()
             }else{

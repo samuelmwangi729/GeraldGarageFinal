@@ -1,11 +1,26 @@
 const Profiles =require('../Models/Profile')
 const Services = require('../Models/Services')
 const Products = require('../Models/Products')
+const Category = require('../Models/Categories')
+const Variation = require('../Models/Variations')
+const Cart = require('../Models/Cart')
+const Brand = require('../Models/Brands')
+const {County,Town} = require('../Models/Locations')
 const url = require('url')
 const path = require('path')
+
 const Index = async (req,res)=>{
-    const services = await Services.find({Status:'Active'})
-    res.render('Backend/Index.ejs',{services:services.length})
+    const services = await Services.countDocuments()
+    const products = await Products.countDocuments()
+    const categories = await Category.countDocuments()
+    const variations = await Variation.countDocuments()
+    const cartItems = await Cart.countDocuments()
+    const orders = await Cart.countDocuments({Status:'CheckedOut'})
+    const wishlist = await Cart.countDocuments({Status:'Wishlist'})
+    const brands = await Brand.countDocuments()
+    const counties = await County.countDocuments()
+    const towns = await Town.countDocuments()
+    res.render('Backend/Index.ejs',{services,products,categories,variations,cartItems,brands,counties,towns,orders,wishlist})
 }
 const Profile = async (req,res)=>{
     const userEmail = res.locals.user.EmailAddress
@@ -57,6 +72,7 @@ const Add_Service = async(req,res)=>{
     res.render('Backend/Add_Services.ejs',{services:services})
 }
 const AcceptServiceData = async(req,res)=>{
+    console.log(req.body)
     const {Title,
         Headline,
         Pay,

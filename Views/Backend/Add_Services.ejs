@@ -115,6 +115,7 @@
                             <tr>
                               <th scope="col">Title</th>
                               <th scope="col">Headline</th>
+                              <th scope="col">Amount</th>
                               <th scope="col">Status</th>
                               <th scope="col">Actions</th>
                             </tr>
@@ -138,6 +139,7 @@
                                     <!-- <th scope="row"><%= service?._id %></th> -->
                                     <td><%= service.Title %></td>
                                     <td><%= service.Headline %></td>
+                                    <td>KES.<%= service.Pay %></td>
                                     <td>
                                       <% if(service.Status==='Active'){ %>
                                         <i data-feather="check-square" class="text-success"></i>

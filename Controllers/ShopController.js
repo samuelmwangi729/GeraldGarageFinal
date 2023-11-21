@@ -4,6 +4,7 @@ const Products = require('../Models/Products')
 const Cart = require('../Models/Cart')
 const Shipping = require('../Models/Shipping')
 const InitiatePay = require('../Utils/Payments')
+const InitPay = require('../Models/InitializedPayments')
 const generateRandom = require('../Utils/RandomUID')
 const Profile = require('../Models/Profile')
 const Pay = async (req,res)=>{
@@ -22,7 +23,20 @@ const Pay = async (req,res)=>{
     //get the locations from the locations models
     const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
     let totalPay= sum + locations.ShippingFee
-    InitiatePay(res,OrderId,'CheckOut','Payment for Goods Plus Delivery',10,email)
+    const initLog = await InitPay.create({
+        InitStatus:"Success",
+        Message:"Done",
+        AuthUrl:"dhhjd",
+        AccessCode:"zxzxc",
+        PaymentRef:"xcxcvx",
+        PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
+        UserEmail:email,
+        OurRef:OrderId,
+        PaymentType:'CheckOut',
+        AmountPaid:totalPay,
+    })
+    res.json(initLog)
+    // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
 }
 const Checkout = async(req, res)=>{
     const email = res.locals.user.EmailAddress
