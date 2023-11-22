@@ -7,10 +7,12 @@ const InitiatePay = require('../Utils/Payments')
 const InitPay = require('../Models/InitializedPayments')
 const generateRandom = require('../Utils/RandomUID')
 const Profile = require('../Models/Profile')
+const Payments = require('../Models/Payments')
+const Order = require('../Models/Orders')
 const Pay = async (req,res)=>{
     const OrderId = generateRandom(8)
     const email = res.locals.user.EmailAddress
-    let cart = await Cart.find({Email:email,Status:'Active'})
+    let cart = await Cart.find({Email:email})
     let sum =0;
     for(let i=0;i<cart.length;i++){
         sum=sum+cart[i].TotalPay
@@ -23,6 +25,7 @@ const Pay = async (req,res)=>{
     //get the locations from the locations models
     const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
     let totalPay= sum + locations.ShippingFee
+    console.log(locations.ShippingFee)
     const initLog = await InitPay.create({
         InitStatus:"Success",
         Message:"Done",
@@ -196,5 +199,81 @@ const Locations = async(req,res)=>{
 }
 const getCallBackData = async(req,res)=>{
     console.log(req.body)
+    const data = req.body
+    const stats = data.data
+    let paymentStatus = stats.status //Our reference in the payment Initialized
+    let paymentref = stats.reference
+    let paymentAmount = stats.amount / 100
+    let paymentChannel = stats.channel
+    let paymentCurrency = stats.currency
+    let ipAddress = stats.ip_address
+    let cardBin = stats.authorization.bin
+    let cardLastFour = stats.authorization.last4
+    let cardExpMonth =stats.authorization.exp_month
+    let cardExpYear =stats.authorization.exp_year
+    let cardType =stats.authorization.card_type
+    let cardBank =stats.authorization.bank
+    let cardCountry =stats.authorization.country_code
+    let cardBrand =stats.authorization.brand
+    let customerEmail = stats.customer.email
+    let paidAt =  data.data.paidAt
+    //update the payments table
+    //check if payment exists in the db  
+    const pExists = await Payments.findOne({paymentref:paymentref})
+    if(pExists){
+        res.json({
+            message:'Unknown Error Occurred'
+        })
+    }else{
+        const payment = await Payments.create({
+            paymentStatus:paymentStatus,
+            paymentref:paymentref,
+            paymentAmount:paymentAmount,
+            paymentChannel:paymentChannel,
+            paymentCurrency:paymentCurrency,
+            ipAddress:ipAddress,
+            cardBin:cardBin,
+            cardLastFour:cardLastFour,
+            cardExpMonth:cardExpMonth,
+            cardExpYear:cardExpYear,
+            cardType:cardType,
+            cardBank:cardBank,
+            cardCountry:cardCountry,
+            cardBrand:cardBrand,
+            customerEmail:customerEmail,
+            paidAt:paidAt,
+        })
+        //check if the amount paid is the required amount
+        const initializedPayment = await InitPay.findOne({OurRef:paymentref})
+        //add the shipping amount 
+        if(initializedPayment.AmountPaid<=payment.paymentAmount){
+            //update the cart to as checked out 
+            let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
+            let sum =0;
+            for(let i=0;i<cart.length;i++){
+                cart[i].Status = 'CheckedOut'
+                await cart[i].save()
+            }
+            payment.Status='Used'
+            payment.save()
+            //place the order now
+            const order = new Order({
+                OrderId:paymentref,
+                Client:customerEmail,
+                OrderAmount:totalPay,
+            })
+            await order.save()
+            if(order){
+                res.json({
+                    message:'Order Successfully Placed'
+                })
+            }
+        }else{
+            console.log("Insufficient amount paid")
+            res.json({
+                message:`The amount paid is not the required amount. Please top up ${initializedPayment.AmountPaid-payment.paymentAmount}`
+            })
+        }
+    }
 }
 module.exports = {CartIndex,Remove_From_Cart,AddCart,Checkout,Pay,Save_CheckOut_Details,Locations,Pay,getCallBackData}
