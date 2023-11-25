@@ -12,34 +12,41 @@ const Order = require('../Models/Orders')
 const Pay = async (req,res)=>{
     const OrderId = generateRandom(8)
     const email = res.locals.user.EmailAddress
-    let cart = await Cart.find({Email:email})
-    let sum =0;
-    for(let i=0;i<cart.length;i++){
-        sum=sum+cart[i].TotalPay
-        cart[i].OrderId = OrderId
-        await cart[i].save()
+    let cart = await Cart.find({Email:email,Status:'Active'})
+    if(cart.length<=0){
+        res.status(422).json({
+            status:'error',
+            message:`Shopping Cart Cant be Empty`,
+            code:422
+        })
+    }else{
+        let sum =0;
+        for(let i=0;i<cart.length;i++){
+            sum=sum+cart[i].TotalPay
+            cart[i].OrderId = OrderId
+            await cart[i].save()
+        }
+        const profile = await Profile.findOne({Email:email})
+        const profileCounty = profile.County
+        const profileTown = profile.Town
+        //get the locations from the locations models
+        const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
+        let totalPay= sum + locations.ShippingFee
+        const initLog = await InitPay.create({
+            InitStatus:"Success",
+            Message:"Done",
+            AuthUrl:"dhhjd",
+            AccessCode:"zxzxc",
+            PaymentRef:"xcxcvx",
+            PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
+            UserEmail:email,
+            OurRef:OrderId,
+            PaymentType:'CheckOut',
+            AmountPaid:totalPay,
+        })
+        res.json(initLog)
+        // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
     }
-    const profile = await Profile.findOne({Email:email})
-    const profileCounty = profile.County
-    const profileTown = profile.Town
-    //get the locations from the locations models
-    const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
-    let totalPay= sum + locations.ShippingFee
-    console.log(locations.ShippingFee)
-    const initLog = await InitPay.create({
-        InitStatus:"Success",
-        Message:"Done",
-        AuthUrl:"dhhjd",
-        AccessCode:"zxzxc",
-        PaymentRef:"xcxcvx",
-        PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
-        UserEmail:email,
-        OurRef:OrderId,
-        PaymentType:'CheckOut',
-        AmountPaid:totalPay,
-    })
-    res.json(initLog)
-    // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
 }
 const Checkout = async(req, res)=>{
     const email = res.locals.user.EmailAddress
@@ -198,7 +205,6 @@ const Locations = async(req,res)=>{
     res.render('Backend/Locations/Add.ejs',{counties:county,towns:towns})
 }
 const getCallBackData = async(req,res)=>{
-    console.log(req.body)
     const data = req.body
     const stats = data.data
     let paymentStatus = stats.status //Our reference in the payment Initialized
@@ -250,8 +256,14 @@ const getCallBackData = async(req,res)=>{
             //update the cart to as checked out 
             let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
             let sum =0;
+            let orderOwner = ""
             for(let i=0;i<cart.length;i++){
                 cart[i].Status = 'CheckedOut'
+                if(orderOwner){
+
+                }else{
+                    orderOwner = cart[i].Email
+                }
                 await cart[i].save()
             }
             payment.Status='Used'
@@ -259,8 +271,8 @@ const getCallBackData = async(req,res)=>{
             //place the order now
             const order = new Order({
                 OrderId:paymentref,
-                Client:customerEmail,
-                OrderAmount:totalPay,
+                Client:orderOwner,
+                OrderAmount:payment.paymentAmount,
             })
             await order.save()
             if(order){
@@ -276,4 +288,59 @@ const getCallBackData = async(req,res)=>{
         }
     }
 }
-module.exports = {CartIndex,Remove_From_Cart,AddCart,Checkout,Pay,Save_CheckOut_Details,Locations,Pay,getCallBackData}
+const WorkOnOrders = async (req,res)=>{
+    const {ID,ACTION} = req.body
+    //get the orders of the logged in user
+    const userEmail  = res.locals.user.EmailAddress
+    //get the order for the user 
+    let order = await Order.findOne({Client:userEmail,OrderId:ID})
+    if(order.OrderStatus==='Shipped'){
+        res.status(400).json({
+            status:'error',
+            message:'Order is Already In Transit',
+            code:400
+        })
+    }else{
+        if(ACTION==='Cancel'){
+            order.OrderStatus="Cancelled"
+            await order.save()
+            res.status(200).json({
+                status:'success',
+                message:'Order Successfully Cancelled',
+                code:200
+            })
+        }else if(ACTION==='Ship'){
+            order.OrderStatus="Shipped"
+            await order.save()
+            res.status(200).json({
+                status:'success',
+                message:'Order Successfully Shipped',
+                code:200
+            })
+        }else if(ACTION==='Reorder'){
+            order.OrderStatus="Active"
+            await order.save()
+            res.status(200).json({
+                status:'success',
+                message:'Products Successfully Reordered',
+                code:200
+            })
+        }else{
+            res.status(400).json({
+                status:'error',
+                message:'Unknown Error Occurred',
+                code:400
+            }) 
+        }
+    }
+    //check the action 
+}
+const getPayments = async (req,res)=>{
+    const payments = await Payments.find({Status:'Used'})
+    let sum=0
+    for(let i=0;i<payments.length;i++){
+        sum = sum+parseInt(payments[i].paymentAmount)
+    }
+    res.render("Backend/Products/All-Payments.ejs",{payments,sum})
+}
+module.exports = {CartIndex,getPayments,Remove_From_Cart,AddCart,Checkout,Pay,Save_CheckOut_Details,WorkOnOrders,Locations,Pay,getCallBackData}

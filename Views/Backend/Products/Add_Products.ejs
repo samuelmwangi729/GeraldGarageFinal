@@ -203,6 +203,50 @@
     </div>
     <%- include('../../../Layouts/Backend/Scripts.ejs') %>
     <script>
+      const loadBrands = async (cv)=>{
+          const brandSelect=document.querySelector("#productBrand")
+          brandSelect.innerHTML=""
+          let opt = document.createElement("option")
+          opt.setAttribute("label","--Loading Data---")
+          opt.textContent = ""
+          brandSelect.appendChild(opt)
+          //get the brands with this category from the backend 
+          const res = await fetch("/Load-Brands",{
+            method:'POST',
+            body:JSON.stringify({
+              CategoryName:cv
+            }),
+            headers:{
+              'Content-Type':'application/json'
+            }
+          })
+          const dataBack = await res.json()
+          if(dataBack.status==='success'){
+            let data = dataBack.message
+            if(data.length>0){
+              brandSelect.innerHTML=""
+              let opt = document.createElement("option")
+              opt.setAttribute("label","--Select Available Brand---")
+              opt.textContent = ""
+              brandSelect.appendChild(opt)
+              data.map((item)=>{
+                var opt = document.createElement("option")
+                opt.setAttribute("value",item.Brand)
+                let node = document.createTextNode(item.Brand)
+                opt.appendChild(node)
+                brandSelect.appendChild(opt)
+              })
+            }else{
+              brandSelect.innerHTML=""
+              let opt = document.createElement("option")
+              opt.setAttribute("label","--No Brands Available---")
+              opt.textContent = ""
+              brandSelect.appendChild(opt)
+            }
+          }else{
+            swal(dataBack.status, dataBack.message, dataBack.status);
+          }
+        }
       const form =  document.querySelector("form#products")
       form.addEventListener('submit',async (e)=>{
         document.querySelector("#ProductNameError").textContent=""
@@ -301,50 +345,7 @@
             .catch( error => {
                 console.error( error );
         } );
-        const loadBrands = async (cv)=>{
-          const brandSelect=document.querySelector("#productBrand")
-          brandSelect.innerHTML=""
-          let opt = document.createElement("option")
-          opt.setAttribute("label","--Loading Data---")
-          opt.textContent = ""
-          brandSelect.appendChild(opt)
-          //get the brands with this category from the backend 
-          const res = await fetch("/Load-Brands",{
-            method:'POST',
-            body:JSON.stringify({
-              CategoryName:cv
-            }),
-            headers:{
-              'Content-Type':'application/json'
-            }
-          })
-          const dataBack = await res.json()
-          if(dataBack.status==='success'){
-            let data = dataBack.message
-            if(data.length>0){
-              brandSelect.innerHTML=""
-              let opt = document.createElement("option")
-              opt.setAttribute("label","--Select Available Brand---")
-              opt.textContent = ""
-              brandSelect.appendChild(opt)
-              data.map((item)=>{
-                var opt = document.createElement("option")
-                opt.setAttribute("value",item.Brand)
-                let node = document.createTextNode(item.Brand)
-                opt.appendChild(node)
-                brandSelect.appendChild(opt)
-              })
-            }else{
-              brandSelect.innerHTML=""
-              let opt = document.createElement("option")
-              opt.setAttribute("label","--No Brands Available---")
-              opt.textContent = ""
-              brandSelect.appendChild(opt)
-            }
-          }else{
-            swal(dataBack.status, dataBack.message, dataBack.status);
-          }
-        } 
+         
     </script>
     </body>
 </html>

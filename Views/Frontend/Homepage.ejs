@@ -108,57 +108,34 @@
                      text-[#14212b]">All Consoel Solution</h2>
                 </div>
                 <div class="wpo-service-slider-two owl-carousel">
-                    <div class="p-[50px] col:p-[30px_25px] shadow-[0px_0px_20px_0px_rgba(20,33,43,0.1)]">
-                        <div class="text-center">
-                            <div
-                                class="w-[120px] h-[120px] leading-[120px] bg-[#f5f5f5] text-center mx-auto mb-[30px] text-[50px] rounded-[50%]">
-                                <i class="fa fa-user"></i>
-                            </div>
-                            <h2 class="text-[#14212b] text-[30px] font-bold mb-[20px] xl:text-[25px] col:text-[25px]">
-                                Financial Advices</h2>
-                            <p class=" text-[#6e6e6e]">Lorem Ipsum is simply dummy text
-                                the industrey's standard dummy text ever
-                                scrambled type specimen</p>
-                            <a href="service-single.html" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
-                                relative rounded-[6px] mt-[20px] uppercase before:absolute before:right-[20px]
-                                before:top-[51%] before:content-['\f103'] before:font-['Flaticon']
-                                before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Details</a>
+                    <% if(services.length<=0){ %>
+                        <div class="alert alert-danger">
+                            <strong>
+                                Kindly check later for available services
+                            </strong>
                         </div>
-                    </div>
-                    <div class="p-[50px] col:p-[30px_25px] shadow-[0px_0px_20px_0px_rgba(20,33,43,0.1)]">
-                        <div class="text-center">
-                            <div
-                                class="w-[120px] h-[120px] leading-[120px] bg-[#f5f5f5] text-center mx-auto mb-[30px] text-[50px] rounded-[50%]">
-                                <i class="fi flaticon-team"></i>
+                    <%}else{ %>
+                        <% services.forEach((service)=>{ %>
+                            <div class="p-[50px] col:p-[30px_25px] shadow-[0px_0px_20px_0px_rgba(20,33,43,0.1)]">
+                                <div class="text-center">
+                                    <div
+                                        class="w-[120px] h-[120px] leading-[120px]  text-center mx-auto mb-[30px] text-[50px] rounded-[50%]">
+                                        <img class="h-[120px]" src="Uploads/<%= service.Photo %>" alt="" style="border-radius: 160px;">
+                                    </div>
+                                    <h2 class="text-[#ff4a17] underline text-[30px] font-bold mb-[20px] xl:text-[25px] col:text-[25px]">
+                                        <%= service.Title %> for KES.<%= (service.Pay).toLocaleString("en") %>
+                                    </h2>
+                                    <p class="text-left text-[#6e6e6e]">
+                                        <%= `${(service.Headline).substr(0,150)} ...` %>
+                                    </p>
+                                    <a href="service-single.html" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
+                                        relative rounded-[6px] mt-[20px] uppercase before:absolute before:right-[20px]
+                                        before:top-[51%] before:content-['\f103'] before:font-['Flaticon']
+                                        before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Details</a>
+                                </div>
                             </div>
-                            <h2 class="text-[#14212b] text-[30px] font-bold mb-[20px] xl:text-[25px] col:text-[25px]">
-                                Risk Management</h2>
-                            <p class=" text-[#6e6e6e]">Lorem Ipsum is simply dummy text
-                                the industrey's standard dummy text ever
-                                scrambled type specimen</p>
-                            <a href="service-single.html" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
-                                relative rounded-[6px] mt-[20px] uppercase before:absolute before:right-[20px]
-                                before:top-[51%] before:content-['\f103'] before:font-['Flaticon']
-                                before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Details</a>
-                        </div>
-                    </div>
-                    <div class="p-[50px] col:p-[30px_25px] shadow-[0px_0px_20px_0px_rgba(20,33,43,0.1)]">
-                        <div class="text-center">
-                            <div
-                                class="w-[120px] h-[120px] leading-[120px] bg-[#f5f5f5] text-center mx-auto mb-[30px] text-[50px] rounded-[50%]">
-                                <i class="fa fa-usd"></i>
-                            </div>
-                            <h2 class="text-[#14212b] text-[30px] font-bold mb-[20px] xl:text-[25px] col:text-[25px]">
-                                Tax Management</h2>
-                            <p class=" text-[#6e6e6e]">Lorem Ipsum is simply dummy text
-                                the industrey's standard dummy text ever
-                                scrambled type specimen</p>
-                            <a href="service-single.html" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
-                                relative rounded-[6px] mt-[20px] uppercase before:absolute before:right-[20px]
-                                before:top-[51%] before:content-['\f103'] before:font-['Flaticon']
-                                before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Details</a>
-                        </div>
-                    </div>
+                        <% }) %>
+                    <% } %>
                 </div>
             </div>
         </section>
@@ -216,7 +193,7 @@
                                         now in your hand</h5>
                                 </div>
                             </div>
-                            <a class="theme-btn" href="service.html">Our Services</a>
+                            <a class="theme-btn" href="/Services">Our Services</a>
                         </div>
                     </div>
                 </div>

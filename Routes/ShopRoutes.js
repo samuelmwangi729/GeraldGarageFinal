@@ -1,6 +1,6 @@
 const {Router} = require('express')
-const {CartIndex,AddCart,Remove_From_Cart,Checkout,Locations,Save_CheckOut_Details,Pay,getCallBackData} = require('../Controllers/ShopController')
-const {getAuthUser} = require('../Middlewares/Authentication')
+const {CartIndex,AddCart,Remove_From_Cart,Checkout,getPayments,Locations,Save_CheckOut_Details,WorkOnOrders,Pay,getCallBackData} = require('../Controllers/ShopController')
+const {checkAuth,getAuthUser} = require('../Middlewares/Authentication')
 const shopRoutes = Router()
 shopRoutes.post("/Add-To-Cart",getAuthUser,AddCart)
 shopRoutes.get("/Cart",getAuthUser,CartIndex)
@@ -10,5 +10,7 @@ shopRoutes.post("/Remove-Cart-Item",getAuthUser,Remove_From_Cart)
 .post("/Save-Checkout-Details",getAuthUser,Save_CheckOut_Details)
 .get("/Pay",getAuthUser,Pay)
 .post("/CallBack",getCallBackData)
+.post("/Work-On-Orders",checkAuth,getAuthUser,WorkOnOrders)
+.get("/All-Payments",checkAuth,getAuthUser,getPayments)
 
 module.exports = shopRoutes

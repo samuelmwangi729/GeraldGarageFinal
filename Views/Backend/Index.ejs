@@ -13,29 +13,47 @@
     <!-- Loader ends-->
     <!-- page-wrapper Start-->
     <div class="page-wrapper compact-wrapper" id="pageWrapper">
-      <!-- Page Header Start-->
-      <div class="page-header">
-        <div class="header-wrapper row m-0">
-          <form class="form-inline search-full col" action="#" method="get">
-            <div class="form-group w-100">
-              <div class="Typeahead Typeahead--twitterUsers">
-                <div class="u-posRelative">
-                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
-                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
-                </div>
-                <div class="Typeahead-menu"></div>
-              </div>
-            </div>
-          </form>
-          <div class="header-logo-wrapper col-auto p-0">
-            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
-            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+ <!-- Page Header Start-->
+ <div class="page-header">
+  <div class="header-wrapper row m-0">
+    <form class="form-inline search-full col" action="#" method="get">
+      <div class="form-group w-100">
+        <div class="Typeahead Typeahead--twitterUsers">
+          <div class="u-posRelative">
+            <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
+            <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
           </div>
-          <div class="left-header col horizontal-wrapper ps-0">
-          </div>
+          <div class="Typeahead-menu"></div>
         </div>
       </div>
-      <!-- Page Header Ends                              -->
+    </form>
+    <div class="header-logo-wrapper col-auto p-0">
+      <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+      <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+    </div>
+    <div class="left-header col horizontal-wrapper ps-0">
+    </div>
+    <div class="nav-right col-6 pull-right right-header p-0">
+      <ul class="nav-menus">   
+        <li>
+          <div class="mode"><i data-feather="moon"></i></div>
+        </li>
+        <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+        <li class="profile-nav onhover-dropdown p-0 me-0">
+          <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+            <div class="flex-grow-1"><span><%= user.FullName %></span>
+              <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+            </div>
+          </div>
+          <ul class="profile-dropdown onhover-show-div">
+            <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+  <!-- Page Header Ends -->
       <!-- Page Body Start-->
       <div class="page-body-wrapper">
         <div class="page-body">
@@ -43,7 +61,7 @@
             <div class="page-title">
               <div class="row">
                 <div class="col-6">
-                  <h3>General</h3>
+                  <h3>Dashboard</h3>
                 </div>
                 <div class="col-6">
                   <ol class="breadcrumb">
@@ -67,11 +85,11 @@
                           <h6 class="font-roboto">Services</h6>
                           <h2 class="mb-0 counter"><%= services %></h2>
                         </div>
-                        <i class="txt-success" data-feather="settings" style="height:50px;width:60px"></i>
+                        <i class="txt-warning" data-feather="settings" style="height:50px;width:60px"></i>
                       </div>
                       <div class="progress-widget">
                         <div class="progress sm-progress-bar progress-animate">
-                          <div class="progress-gradient-secondary" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                          <div class="progress-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                         </div>
                       </div>
                     </div>
@@ -91,7 +109,7 @@
                         </div>
                         <div class="progress-widget">
                           <div class="progress sm-progress-bar progress-animate">
-                            <div class="progress-gradient-success" role="progressbar" style="width: 60%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                            <div class="progress-gradient-success" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                           </div>
                         </div>
                       </div>
@@ -107,11 +125,11 @@
                             <h6 class="font-roboto">Orders</h6>
                             <h2 class="mb-0 counter"><%= orders %></h2>
                           </div>
-                          <i class="txt-success" data-feather="truck" style="height:50px;width:60px"></i>
+                          <i class="txt-primary" data-feather="truck" style="height:50px;width:60px"></i>
                         </div>
                         <div class="progress-widget">
                           <div class="progress sm-progress-bar progress-animate">
-                            <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                            <div class="progress-gradient-primary" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                           </div>
                         </div>
                       </div>
@@ -157,11 +175,11 @@
                           <h6 class="font-roboto">Categories</h6>
                           <h2 class="mb-0 counter"><%= categories %></h2>
                         </div>
-                        <i class="txt-success" data-feather="list" style="height:50px;width:60px"></i>
+                        <i class="txt-warning" data-feather="list" style="height:50px;width:60px"></i>
                       </div>
                       <div class="progress-widget">
                         <div class="progress sm-progress-bar progress-animate">
-                          <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                          <div class="progress-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                         </div>
                       </div>
                     </div>
@@ -181,7 +199,7 @@
                     </div>
                     <div class="progress-widget">
                       <div class="progress sm-progress-bar progress-animate">
-                        <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                        <div class="progress-gradient-success" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                       </div>
                     </div>
                   </div>
@@ -197,11 +215,11 @@
                       <h6 class="font-roboto">Add Products</h6>
                       <h2 class="mb-0 counter"><%= products %></h2>
                     </div>
-                    <i class="txt-success" data-feather="plus" style="height:50px;width:60px"></i>
+                    <i class="txt-primary" data-feather="plus" style="height:50px;width:60px"></i>
                   </div>
                   <div class="progress-widget">
                     <div class="progress sm-progress-bar progress-animate">
-                      <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75"
+                      <div class="progress-gradient-primary" role="progressbar" style="width: 90%" aria-valuenow="75"
                        aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                     </div>
                   </div>
@@ -218,11 +236,11 @@
                     <h6 class="font-roboto">View Cart</h6>
                     <h2 class="mb-0 counter"><%= cartItems %></h2>
                   </div>
-                  <i class="txt-success" data-feather="shopping-cart" style="height:50px;width:60px"></i>
+                  <i class="txt-danger" data-feather="shopping-cart" style="height:50px;width:60px"></i>
                 </div>
                 <div class="progress-widget">
                   <div class="progress sm-progress-bar progress-animate">
-                    <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                    <div class="progress-gradient-danger" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                   </div>
                 </div>
               </div>
@@ -230,19 +248,21 @@
           </a>
       </div>
       <div class="col-sm-6 col-lg-3">
-        <a href="/All-Orders">
+        <a href="/All-Payments">
           <div class="card o-hidden">
             <div class="card-body">
               <div class="d-flex static-widget">
                 <div class="flex-grow-1">
                   <h6 class="font-roboto">Payments Collected</h6>
-                  <h2 class="mb-0 counter">893</h2>
+                  <h2 class="mb-0"> 
+                    KES. <span class="counter"><%= (totalPayments.toLocaleString("en")) %></span>
+                  </h2>
                 </div>
-                <i class="txt-success" data-feather="clipboard" style="height:50px;width:60px"></i>
+                <i class="txt-warning" data-feather="credit-card" style="height:50px;width:60px"></i>
               </div>
               <div class="progress-widget">
                 <div class="progress sm-progress-bar progress-animate">
-                  <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                  <div class="progress-gradient-danger" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
                 </div>
               </div>
             </div>
@@ -262,7 +282,7 @@
             </div>
             <div class="progress-widget">
               <div class="progress sm-progress-bar progress-animate">
-                <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                <div class="progress-gradient-success" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
               </div>
             </div>
           </div>
@@ -278,11 +298,11 @@
                 <h6 class="font-roboto">Counties</h6>
                 <h2 class="mb-0 counter"><%= counties %></h2>
               </div>
-              <i class="txt-success" data-feather="map" style="height:50px;width:60px"></i>
+              <i class="txt-primary" data-feather="map" style="height:50px;width:60px"></i>
             </div>
             <div class="progress-widget">
               <div class="progress sm-progress-bar progress-animate">
-                <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                <div class="progress-gradient-primary" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
               </div>
             </div>
           </div>
@@ -298,11 +318,11 @@
                 <h6 class="font-roboto">Towns</h6>
                 <h2 class="mb-0 counter"><%= towns %></h2>
               </div>
-              <i class="txt-success" data-feather="map-pin" style="height:50px;width:60px"></i>
+              <i class="txt-danger" data-feather="map-pin" style="height:50px;width:60px"></i>
             </div>
             <div class="progress-widget">
               <div class="progress sm-progress-bar progress-animate">
-                <div class="progress-gradient-primary" role="progressbar" style="width: 48%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                <div class="progress-gradient-danger" role="progressbar" style="width: 90%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
               </div>
             </div>
           </div>

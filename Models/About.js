@@ -3,37 +3,44 @@ const {Schema,model} = require('mongoose')
 //create the schema 
 const AboutSchema = new Schema({
     //create the fields here 
+    Headline:{
+        type:String,
+        required:[true,'Headline field is required'],
+    },
     Mission:{
         type:String,
         required:[true,'This field is required'],
-        Status:['Active','Suspended'],
-        default:'Active'
     },
     Vission:{
         type:String,
         required:[true,'This field is required'],
-        Status:['Active','Suspended'],
-        default:'Active'
+        
     },
     WelcomeText:{
         type:String,
         required:[true,'This field is required'],
-        Status:['Active','Suspended'],
-        default:'Active'
     },
+    Status:{
+        type:String,
+        enum:['Active','Suspended'],
+        default:'Active'
+    }
 },{timestamps:true})
 
 const ProfessionSkillsSchema = new Schema({
     Skill:{
         type:String,
         required:[true,'This field is required'],
-        Status:['Active','Inactive'],
-        default:'Active'
     },
     SkillRating:{
         type:Number,
         required:[true,'This field is required'],
         default:0
+    },
+    Status:{
+        type:String,
+        enum:['Active','Suspended'],
+        default:'Active'
     }
 },{timestamps:true})
 
@@ -54,6 +61,11 @@ const TeamMembersSchema = new Schema({
         type:String,
         required:[true,'This field is required'],
         default:'none.png'
+    },
+    Status:{
+        type:String,
+        enum:['Active','Suspended'],
+        default:'Active'
     }
 },{timestamps:true})
 
@@ -78,6 +90,11 @@ const TestimonialSchema = new Schema({
         type:String,
         required:[true,'This field is required'],
         default:'none.png'
+    },
+    Status:{
+        type:String,
+        enum:['Active','Suspended'],
+        default:'Active'
     }
 },{timestamps:true})
 

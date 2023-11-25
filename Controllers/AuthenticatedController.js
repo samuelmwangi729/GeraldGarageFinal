@@ -5,6 +5,8 @@ const Category = require('../Models/Categories')
 const Variation = require('../Models/Variations')
 const Cart = require('../Models/Cart')
 const Brand = require('../Models/Brands')
+const Payments = require('../Models/Payments')
+const Orders = require('../Models/Orders')
 const {County,Town} = require('../Models/Locations')
 const url = require('url')
 const path = require('path')
@@ -15,12 +17,17 @@ const Index = async (req,res)=>{
     const categories = await Category.countDocuments()
     const variations = await Variation.countDocuments()
     const cartItems = await Cart.countDocuments()
-    const orders = await Cart.countDocuments({Status:'CheckedOut'})
+    const orders = await Orders.countDocuments({OrderStatus:'Active'})
     const wishlist = await Cart.countDocuments({Status:'Wishlist'})
     const brands = await Brand.countDocuments()
     const counties = await County.countDocuments()
     const towns = await Town.countDocuments()
-    res.render('Backend/Index.ejs',{services,products,categories,variations,cartItems,brands,counties,towns,orders,wishlist})
+    const payments = await Payments.find({Status:'Used'})
+    let totalPayments =0
+    for(let i=0;i<payments.length;i++){
+        totalPayments = totalPayments+parseInt(payments[i].paymentAmount)
+    }
+    res.render('Backend/Index.ejs',{totalPayments,services,products,categories,variations,cartItems,brands,counties,towns,orders,wishlist})
 }
 const Profile = async (req,res)=>{
     const userEmail = res.locals.user.EmailAddress
@@ -34,8 +41,9 @@ const All_Products = async (req,res)=>{
 const All_Services = (req,res)=>{
     res.render('Backend/All_Services.ejs')
 }
-const All_Orders = (req,res)=>{
-    res.render('Backend/All_Orders.ejs')
+const All_Orders = async (req,res)=>{
+    const orders = await Orders.find({Client:res.locals.user.EmailAddress})
+    res.render('Backend/All_Orders.ejs',{orders})
 }
 const GetProfileData = async(req,res)=>{
     const {Title,PhoneNumber,Residence,Age} = req.body

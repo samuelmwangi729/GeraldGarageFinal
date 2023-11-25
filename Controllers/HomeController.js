@@ -4,6 +4,7 @@ const User = require('../Models/Users')
 const generateJwt = require('../Utils/GenerateJWTtoken')
 const bcrypt = require('bcrypt')
 const generateRandom = require('../Utils/RandomUID')
+const ServicesModel = require('../Models/Services')
 const EventEmitter = require('events')
 const event  = new EventEmitter()
 var isEmailValid=false
@@ -36,16 +37,17 @@ const Index = async (req,res)=>{
         VisitorIP:ip,
         Platform:userPlatform
     })
-    
-    res.render('Frontend/Homepage.ejs')
+    const services = await ServicesModel.find({Status:'Active'})
+    res.render('Frontend/Homepage.ejs',{services})
 }
 
 const About = (req,res)=>{
     res.render('Frontend/About.ejs')
 }
 
-const Services = (req,res)=>{
-    res.render('Frontend/Services.ejs')
+const Services = async (req,res)=>{
+    const services = await ServicesModel.find({Status:'Active'})
+    res.render('Frontend/Services.ejs',{services})
 }
 
 const Projects = (req,res)=>{

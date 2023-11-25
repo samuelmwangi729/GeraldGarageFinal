@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<%- include('../../Layouts/Backend/Header.ejs') %>
+<%- include('../../../Layouts/Backend/Header.ejs') %>
   <body>
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
@@ -14,19 +14,8 @@
     <!-- page-wrapper Start-->
     <div class="page-wrapper compact-wrapper" id="pageWrapper">
       <!-- Page Header Start-->
-      <div class="page-header">
+      <div class="page-header row">
         <div class="header-wrapper row m-0">
-          <form class="form-inline search-full col" action="#" method="get">
-            <div class="form-group w-100">
-              <div class="Typeahead Typeahead--twitterUsers">
-                <div class="u-posRelative">
-                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text" placeholder="Search Koho .." name="q" title="" autofocus>
-                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span></div><i class="close-search" data-feather="x"></i>
-                </div>
-                <div class="Typeahead-menu"></div>
-              </div>
-            </div>
-          </form>
           <div class="header-logo-wrapper col-auto p-0">
             <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
             <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
@@ -35,9 +24,6 @@
           </div>
           <div class="nav-right col-6 pull-right right-header p-0">
             <ul class="nav-menus">   
-              <li>
-                <div class="mode"><i data-feather="moon"></i></div>
-              </li>
               <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
               <li class="profile-nav onhover-dropdown p-0 me-0">
                 <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
@@ -92,6 +78,6 @@
         </footer>
       </div>
     </div>
-    <%- include('../../Layouts/Backend/Scripts.ejs') %>
+    <%- include('../../../Layouts/Backend/Scripts.ejs') %>
   </body>
 </html>
