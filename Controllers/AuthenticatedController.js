@@ -253,8 +253,15 @@ const Delete_Service = async (req,res)=>{
         code
     })
 }
+const BookService = async (req,res)=>{
+    const {query} = url.parse(req.url,true)
+    let serviceID = query.serviceID
+    const service = await Services.findOne({_id:serviceID,Status:'Active'})
+    res.render('Backend/Book_Service.ejs',{service})
+}
 module.exports = {Index,Profile,All_Products,All_Services,
     All_Orders,GetProfileData,
     Add_Service,AcceptServiceData,
     Activate_Service,View_Service,
+    BookService,
     Suspend_Service,Delete_Service}

@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {Index,About,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout} = require('../Controllers/HomeController')
+const {Index,AboutUs,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout} = require('../Controllers/HomeController')
 
 //create an instance 
 const homeRoutes = Router()
@@ -7,7 +7,7 @@ const homeRoutes = Router()
 
 //accept the request methods here 
 homeRoutes.get("/",Index)
-.get("/About",About)
+.get("/About",AboutUs)
 .get("/Services",Services)
 .get("/Projects",Projects)
 .get("/Blog",Blog)

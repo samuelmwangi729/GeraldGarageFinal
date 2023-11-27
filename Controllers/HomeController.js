@@ -5,6 +5,7 @@ const generateJwt = require('../Utils/GenerateJWTtoken')
 const bcrypt = require('bcrypt')
 const generateRandom = require('../Utils/RandomUID')
 const ServicesModel = require('../Models/Services')
+const {About} = require('../Models/About')
 const EventEmitter = require('events')
 const event  = new EventEmitter()
 var isEmailValid=false
@@ -41,8 +42,9 @@ const Index = async (req,res)=>{
     res.render('Frontend/Homepage.ejs',{services})
 }
 
-const About = (req,res)=>{
-    res.render('Frontend/About.ejs')
+const AboutUs = async (req,res)=>{
+    const about = await About.findOne({Status:'Active'})
+    res.render('Frontend/About.ejs',{about})
 }
 
 const Services = async (req,res)=>{
@@ -185,4 +187,4 @@ const Logout = (req,res)=>{
     res.cookie('jwt','',{httpOnly:true,maxAge:10})
     res.redirect('/')
 }
-module.exports = {Index,About,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout}
+module.exports = {Index,AboutUs,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout}

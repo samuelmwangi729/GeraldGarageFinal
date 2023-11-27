@@ -20,6 +20,14 @@ const AboutSchema = new Schema({
         type:String,
         required:[true,'This field is required'],
     },
+    Description:{
+        type:String,
+        required:[true,'This field is required'],
+    },
+    BannerImage:{
+        type:String,
+        required:[true,'This field is required'],
+    },
     Status:{
         type:String,
         enum:['Active','Suspended'],

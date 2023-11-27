@@ -3,7 +3,6 @@ const path = require('path')
 const UploadFiles = (files,Location=null)=>{
     const dirname = require('path').dirname;
     const absPath = (dirname(__filename)).toString()
-    console.log('From the brands')
     const splittedPath = absPath.split("\\")
     const newPath = []
     for(let i=0;i<splittedPath.length-1;i++){

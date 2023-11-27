@@ -1,4 +1,6 @@
 const url = require('url')
+const path = require('path')
+const {About} = require('../Models/About')
 const {County,Town} = require('../Models/Locations')
 const Products = require('../Models/Products')
 const Cart = require('../Models/Cart')
@@ -9,6 +11,7 @@ const generateRandom = require('../Utils/RandomUID')
 const Profile = require('../Models/Profile')
 const Payments = require('../Models/Payments')
 const Order = require('../Models/Orders')
+const {UploadFiles} = require('../Utils/ImageUploader')
 const Pay = async (req,res)=>{
     const OrderId = generateRandom(8)
     const email = res.locals.user.EmailAddress
@@ -343,4 +346,32 @@ const getPayments = async (req,res)=>{
     }
     res.render("Backend/Products/All-Payments.ejs",{payments,sum})
 }
-module.exports = {CartIndex,getPayments,Remove_From_Cart,AddCart,Checkout,Pay,Save_CheckOut_Details,WorkOnOrders,Locations,Pay,getCallBackData}
+const Add_About = async (req, res) =>{
+    const about = await About.find({Status:'Active'})
+    res.render('Backend/Add-About.ejs',{about:about})
+}
+const getAboutData = async (req,res)=>{
+    const files = req.files
+    const fileName = UploadFiles(files)[0]
+    const {Headline,Mission,Vission,WelcomeText,Description} = req.body
+    const abt  = new About({
+        Headline: Headline,
+        Mission: Mission,
+        Vission: Vission,
+        WelcomeText: WelcomeText,
+        Description:Description,
+        BannerImage:fileName
+    })
+    await abt.save()
+    res.redirect("/Add-About")
+}
+const DeleteAbout = async (req,res)=>{
+    const id = req.params.ID
+    //get the about 
+    let abt = await About.findOne({_id:id})
+    if(abt){
+        await About.findOneAndDelete({_id:id})
+    }
+    res.redirect("/Add-About")
+}
+module.exports = {CartIndex,DeleteAbout,getPayments,Add_About,Remove_From_Cart,AddCart,getAboutData,Checkout,Pay,Save_CheckOut_Details,WorkOnOrders,Locations,Pay,getCallBackData}

@@ -1,5 +1,6 @@
 const {Router} = require('express')
-const {CartIndex,AddCart,Remove_From_Cart,Checkout,getPayments,Locations,Save_CheckOut_Details,WorkOnOrders,Pay,getCallBackData} = require('../Controllers/ShopController')
+const fileUploader = require('express-fileupload')
+const {CartIndex,AddCart,Remove_From_Cart,Add_About,Checkout,getAboutData,DeleteAbout,getPayments,Locations,Save_CheckOut_Details,WorkOnOrders,Pay,getCallBackData} = require('../Controllers/ShopController')
 const {checkAuth,getAuthUser} = require('../Middlewares/Authentication')
 const shopRoutes = Router()
 shopRoutes.post("/Add-To-Cart",getAuthUser,AddCart)
@@ -12,5 +13,8 @@ shopRoutes.post("/Remove-Cart-Item",getAuthUser,Remove_From_Cart)
 .post("/CallBack",getCallBackData)
 .post("/Work-On-Orders",checkAuth,getAuthUser,WorkOnOrders)
 .get("/All-Payments",checkAuth,getAuthUser,getPayments)
+.get("/Add-About",checkAuth,getAuthUser,Add_About)
+.post("/Add-About-Data",checkAuth,getAuthUser,fileUploader({createParentPath:true}),getAboutData)
+.get("/Delete-About/:ID",checkAuth,getAuthUser,DeleteAbout)
 
 module.exports = shopRoutes

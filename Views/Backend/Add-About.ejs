@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../Layouts/Backend/Header.ejs') %>
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header row">
+        <div class="header-wrapper row m-0">
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark" src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i></div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">   
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span><%= user.FullName %></span>
+                    <p class="mb-0 font-roboto"><%= user.Role %> <i class="fa fa-angle-down"></i></p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends                              -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <!-- Page Sidebar Start-->
+        <!-- Page Sidebar Ends-->
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>About Us Section</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">About Us</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">
+                            Add About Us
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="aboutForm" action="/Add-About-Data" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="WelcomeText" class="label-control">
+                                    WelcomeText
+                                </label>
+                                <input required type="text" name="WelcomeText" id="Headline" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="Headline" class="label-control">
+                                    Headline
+                                </label>
+                                <input required type="text" name="Headline" id="Headline" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="Mission" class="label-control">
+                                    Mission
+                                </label>
+                                <textarea  required class="form-control" name="Mission" id="Mission"  rows="5"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="Vission" class="label-control">
+                                    Vission
+                                </label>
+                                <textarea required class="form-control" name="Vission" id="Vission"  rows="5"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="Description" class="label-control">
+                                    Description
+                                </label>
+                                <textarea required class="form-control" name="Description" id="Description"  rows="5"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="Banner" class="label-control">
+                                    Banner Image
+                                </label>
+                                <input type="file" name="BannerImage" id="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-success" type="submit">Add About Us</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">
+                            Available About Us
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Welcome Text</th>
+                                        <th>Headline</th>
+                                        <th>Vission</th>
+                                        <th>Mission</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(about.length>0){%>
+                                        <% about.map((item)=>{ %>
+                                            <tr>
+                                                <td><%= item.WelcomeText %></td>
+                                                <td><%= item.Headline %></td>
+                                                <td><%= item.Vission %></td>
+                                                <td><%= item.Mission %></td>
+                                                <td>
+                                                    <% if(item.Status==='Active'){ %>
+                                                        <span class="badge badge-danger">
+                                                            <a href="/Delete-About/<%=item._id %>" class="text-white">Delete</a>
+                                                        </span>
+                                                    <%} %>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <%}else{%>
+                                        <tr>
+                                            <td colspan="5">
+                                                <div class="alert alert-warning">
+                                                    <strong class="text-center">
+                                                        No About Us Added. Add it <a href="/Add-About">Here</a>
+                                                    </strong>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <%} %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right">     <i class="fa fa-heart font-danger">               </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../Layouts/Backend/Scripts.ejs') %>
+  </body>
+</html>
