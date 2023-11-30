@@ -4,7 +4,7 @@ const User = require('../Models/Users')
 const generateJwt = require('../Utils/GenerateJWTtoken')
 const bcrypt = require('bcrypt')
 const generateRandom = require('../Utils/RandomUID')
-const ServicesModel = require('../Models/Services')
+const {Services} = require('../Models/Services')
 const {About} = require('../Models/About')
 const EventEmitter = require('events')
 const event  = new EventEmitter()
@@ -38,7 +38,7 @@ const Index = async (req,res)=>{
         VisitorIP:ip,
         Platform:userPlatform
     })
-    const services = await ServicesModel.find({Status:'Active'})
+    const services = await Services.find({Status:'Active'})
     res.render('Frontend/Homepage.ejs',{services})
 }
 
@@ -47,8 +47,8 @@ const AboutUs = async (req,res)=>{
     res.render('Frontend/About.ejs',{about})
 }
 
-const Services = async (req,res)=>{
-    const services = await ServicesModel.find({Status:'Active'})
+const Service = async (req,res)=>{
+    const services = await Services.find({Status:'Active'})
     res.render('Frontend/Services.ejs',{services})
 }
 
@@ -187,4 +187,4 @@ const Logout = (req,res)=>{
     res.cookie('jwt','',{httpOnly:true,maxAge:10})
     res.redirect('/')
 }
-module.exports = {Index,AboutUs,Services,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout}
+module.exports = {Index,AboutUs,Service,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout}

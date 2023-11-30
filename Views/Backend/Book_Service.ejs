@@ -13,7 +13,7 @@
             </div>
             <div class="p-[30px] bg-white relative z-10 
                 shadow-[0px_1px_15px_0px_rgba(62,65,159,0.1)] sm:p-7 sm:pt-[50px]">
-                <form  class="contact-validation-active mx-[-15px]" id="registerForm">
+                <form  class="contact-validation-active mx-[-15px]" method="POST" action="/Post-Appointment">
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
                         <h6 style="color:red" id="namesError"></h6>
                         <input type="text" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
@@ -26,7 +26,7 @@
                         <label for="Date">Service </label>
                         <input type="email" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
                             text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
-                             focus:border-[#ff4a17] focus:bg-transparent " name="email" id="username" value="<%= service.Title %>"
+                             focus:border-[#ff4a17] focus:bg-transparent " name="ServiceTitle"  value="<%= service.Title %>"
                             readonly>
                     </div>
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
@@ -34,7 +34,7 @@
                         <label for="Date">Service Date</label>
                         <input type="date" class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
                             h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
-                            focus:border-[#ff4a17] focus:bg-transparent"
+                            focus:border-[#ff4a17] focus:bg-transparent" name="serviceDate" required
                             >
                     </div>
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
@@ -42,7 +42,7 @@
                         <label for="Date">Service Price</label>
                         <input type="text" class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
                             h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
-                            focus:border-[#ff4a17] focus:bg-transparent" value="KES <%= (service.Pay).toLocaleString('en') %>"
+                            focus:border-[#ff4a17] focus:bg-transparent" value="KES <%= (service.Pay).toLocaleString('en') %>" name="servicePrice"
                             >
                     </div>
                     <div class="text-center w-full mb-[5px]">

@@ -1,5 +1,5 @@
 const Profiles =require('../Models/Profile')
-const Services = require('../Models/Services')
+const {Services,ServiceBooking} = require('../Models/Services')
 const Products = require('../Models/Products')
 const Category = require('../Models/Categories')
 const Variation = require('../Models/Variations')
@@ -7,9 +7,12 @@ const Cart = require('../Models/Cart')
 const Brand = require('../Models/Brands')
 const Payments = require('../Models/Payments')
 const Orders = require('../Models/Orders')
+const InitiatePay = require('../Utils/Payments')
+const InitPay = require('../Models/InitializedPayments')
 const {County,Town} = require('../Models/Locations')
 const url = require('url')
 const path = require('path')
+const generateRandom = require('../Utils/RandomUID')
 
 const Index = async (req,res)=>{
     const services = await Services.countDocuments()
@@ -259,9 +262,41 @@ const BookService = async (req,res)=>{
     const service = await Services.findOne({_id:serviceID,Status:'Active'})
     res.render('Backend/Book_Service.ejs',{service})
 }
+const ServiceBookings = async(req,res)=>{
+    const {serviceID,ServiceTitle,serviceDate,servicePrice} = req.body
+    console.log(serviceDate)
+    const service = await Services.findOne({_id:serviceID,Status:'Active'})
+    //book the service 
+    const bservice = new ServiceBooking({
+        ServiceID:service._id,
+        ServiceTitle:service.Title,
+        Client:res.locals.user.EmailAddress,
+        ServiceDate:serviceDate,
+        Amount:service.Pay
+    })
+    await bservice.save()
+    let paymentID = generateRandom(5)
+    //initialize payment for the service 
+    const initLog = await InitPay.create({
+        InitStatus:"Success",
+        Message:"Done",
+        AuthUrl:"dhhjd",
+        AccessCode:"zxzxc",
+        PaymentRef:paymentID,
+        PaymentReason:`Payment for Service ${service.Title}`,
+        UserEmail:res.locals.user.EmailAddress,
+        OurRef:service._id,
+        PaymentType:'Service',
+        AmountPaid:service.Pay,
+    })
+    await initLog.save()
+    res.json(initLog)
+    // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
+    console.log(service)
+}
 module.exports = {Index,Profile,All_Products,All_Services,
     All_Orders,GetProfileData,
     Add_Service,AcceptServiceData,
     Activate_Service,View_Service,
     BookService,
-    Suspend_Service,Delete_Service}
+    Suspend_Service,ServiceBookings,Delete_Service}

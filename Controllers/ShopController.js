@@ -10,6 +10,7 @@ const InitPay = require('../Models/InitializedPayments')
 const generateRandom = require('../Utils/RandomUID')
 const Profile = require('../Models/Profile')
 const Payments = require('../Models/Payments')
+const {ServiceBooking} = require('../Models/Services')
 const Order = require('../Models/Orders')
 const {UploadFiles} = require('../Utils/ImageUploader')
 const Pay = async (req,res)=>{
@@ -47,8 +48,7 @@ const Pay = async (req,res)=>{
             PaymentType:'CheckOut',
             AmountPaid:totalPay,
         })
-        res.json(initLog)
-        // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
+        InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
     }
 }
 const Checkout = async(req, res)=>{
@@ -228,8 +228,9 @@ const getCallBackData = async(req,res)=>{
     let paidAt =  data.data.paidAt
     //update the payments table
     //check if payment exists in the db  
-    const pExists = await Payments.findOne({paymentref:paymentref})
+    const pExists = await Payments.findOne({paymentref:paymentref,Status:'Not Used'})
     if(pExists){
+        console.log('cant pass here')
         res.json({
             message:'Unknown Error Occurred'
         })
@@ -256,8 +257,27 @@ const getCallBackData = async(req,res)=>{
         const initializedPayment = await InitPay.findOne({OurRef:paymentref})
         //add the shipping amount 
         if(initializedPayment.AmountPaid<=payment.paymentAmount){
-            //update the cart to as checked out 
-            let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
+            //check the payment type /service or checkout 
+            if(initializedPayment.PaymentType==='Service'){
+                //update the service
+                const serviceBooked = await ServiceBooking.findOne({ServiceID:initializedPayment.OurRef,Client:initializedPayment.UserEmail,Status:'Active'})
+                if(serviceBooked){
+                    //update the service 
+                    serviceBooked.PaymentStatus='Paid'
+                    serviceBooked.save()
+                    //set the payment as used
+                    payment.Status='Used'
+                    payment.save()
+                    res.json({
+                        message:'Service Successfully Paid'
+                    })
+                }else{
+                    res.json({
+                        message:'Unknown Error Occurred'
+                    })
+                }
+            }else{
+                let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
             let sum =0;
             let orderOwner = ""
             for(let i=0;i<cart.length;i++){
@@ -283,6 +303,9 @@ const getCallBackData = async(req,res)=>{
                     message:'Order Successfully Placed'
                 })
             }
+            }
+            //update the cart to as checked out 
+            
         }else{
             console.log("Insufficient amount paid")
             res.json({
