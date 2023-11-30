@@ -264,7 +264,7 @@ const BookService = async (req,res)=>{
 }
 const ServiceBookings = async(req,res)=>{
     const {serviceID,ServiceTitle,serviceDate,servicePrice} = req.body
-    console.log(serviceDate)
+    console.log(req.body)
     const service = await Services.findOne({_id:serviceID,Status:'Active'})
     //book the service 
     const bservice = new ServiceBooking({
@@ -282,17 +282,17 @@ const ServiceBookings = async(req,res)=>{
         Message:"Done",
         AuthUrl:"dhhjd",
         AccessCode:"zxzxc",
-        PaymentRef:paymentID,
+        PaymentRef:service._id,
         PaymentReason:`Payment for Service ${service.Title}`,
         UserEmail:res.locals.user.EmailAddress,
-        OurRef:service._id,
+        OurRef:paymentID,
         PaymentType:'Service',
         AmountPaid:service.Pay,
     })
-    await initLog.save()
-    res.json(initLog)
-    // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
-    console.log(service)
+    // await initLog.save()
+    // res.json(initLog)
+    InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,10,res.locals.user.EmailAddress)
+    // console.log(service)
 }
 module.exports = {Index,Profile,All_Products,All_Services,
     All_Orders,GetProfileData,

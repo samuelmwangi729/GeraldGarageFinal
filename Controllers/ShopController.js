@@ -36,20 +36,6 @@ const Pay = async (req,res)=>{
         //get the locations from the locations models
         const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
         let totalPay= sum + locations.ShippingFee
-<<<<<<< HEAD
-        const initLog = await InitPay.create({
-            InitStatus:"Success",
-            Message:"Done",
-            AuthUrl:"dhhjd",
-            AccessCode:"zxzxc",
-            PaymentRef:"xcxcvx",
-            PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
-            UserEmail:email,
-            OurRef:OrderId,
-            PaymentType:'CheckOut',
-            AmountPaid:totalPay,
-        })
-=======
         // const initLog = await InitPay.create({
         //     InitStatus:"Success",
         //     Message:"Done",
@@ -63,7 +49,6 @@ const Pay = async (req,res)=>{
         //     AmountPaid:totalPay,
         // })
         // res.json(initLog)
->>>>>>> a3a9240589ed56eff071658d9d43358ef93b8aca
         InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
     }
 }
@@ -224,6 +209,7 @@ const Locations = async(req,res)=>{
     res.render('Backend/Locations/Add.ejs',{counties:county,towns:towns})
 }
 const getCallBackData = async(req,res)=>{
+    console.log(req.body)
     const data = req.body
     const stats = data.data
     let paymentStatus = stats.status //Our reference in the payment Initialized
@@ -270,7 +256,7 @@ const getCallBackData = async(req,res)=>{
             paidAt:paidAt,
         })
         //check if the amount paid is the required amount
-        const initializedPayment = await InitPay.findOne({OurRef:paymentref})
+        let initializedPayment = await InitPay.findOne({OurRef:paymentref})
         //add the shipping amount 
         if(initializedPayment.AmountPaid<=payment.paymentAmount){
             //check the payment type /service or checkout 
