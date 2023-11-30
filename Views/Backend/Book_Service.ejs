@@ -34,7 +34,7 @@
                         <label for="Date">Service Date</label>
                         <input type="date" class="form-control  w-full bg-transparent border-[1px] border-[#ebebeb] 
                             h-[50px] text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none  
-                            focus:border-[#ff4a17] focus:bg-transparent"
+                            focus:border-[#ff4a17] focus:bg-transparent" min="<%= new Date().toISOString().split('T')[0] %>"
                             >
                     </div>
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">

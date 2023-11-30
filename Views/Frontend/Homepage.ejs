@@ -128,10 +128,10 @@
                                     <p class="text-left text-[#6e6e6e]">
                                         <%= `${(service.Headline).substr(0,150)} ...` %>
                                     </p>
-                                    <a href="service-single.html" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
+                                    <a href="/Book-A-Service?serviceID=<%=service._id %>" class="inline-block transition-all duration-300 p-[10px_35px] pr-[45px] text-[#ff4a17] border-[1px] border-[#ff4a17]
                                         relative rounded-[6px] mt-[20px] uppercase before:absolute before:right-[20px]
                                         before:top-[51%] before:content-['\f103'] before:font-['Flaticon']
-                                        before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Details</a>
+                                        before:-translate-y-1/2 hover:bg-[#ff4a17] hover:text-white">Book</a>
                                 </div>
                             </div>
                         <% }) %>
