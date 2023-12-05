@@ -1,5 +1,5 @@
 const express = require('express')
-const connDb = require('./Utils/DbConnection')
+const {connDb} = require('./Utils/DbConnection')
 const cookieParser = require('cookie-parser')
 const {getAuthUser} = require('./Middlewares/Authentication')
 const homeRoutes = require('./Routes/HomeRoutes')
@@ -13,7 +13,7 @@ const app = express()
 //create a listening port 
 const port = 8080
 
-app.listen(port,()=>{
+const server = app.listen(port,()=>{
     console.log("\n==========================================")
     console.log(`Server Started on port ${port}...`)
     console.log('Press CTRL + C to Cancel')
@@ -38,3 +38,4 @@ app.use(express.static('Resources'))
 app.use((req,res)=>{
     res.render('Frontend/404.ejs')
  })
+module.exports = server

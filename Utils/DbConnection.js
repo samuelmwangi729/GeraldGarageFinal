@@ -34,4 +34,8 @@ const connDb = async ()=>{
         console.log('Connection to the database was Unsuccessful, retrying now....')
     }
 }
-module.exports=connDb
+
+const terminateConnection = async ()=>{
+    await mongoose.disconnect()
+}
+module.exports={connDb,terminateConnection}

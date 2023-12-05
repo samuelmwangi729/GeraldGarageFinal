@@ -116,8 +116,12 @@
                     const dataBack = await res.json()
                     if(dataBack.status==='success'){
                         registrationForm.reset()
+                        dataBack.message = `${dataBack.message}.Redirecting...`
                     }
                     swal(dataBack.status, dataBack.message, dataBack.status);
+                    setTimeout(()=>{
+                        location.href="/Login"
+                    },5000)
                 }
             }
         })
