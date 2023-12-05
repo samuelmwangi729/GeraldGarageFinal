@@ -31,25 +31,26 @@ const Pay = async (req,res)=>{
             await cart[i].save()
         }
         const profile = await Profile.findOne({Email:email})
+        console.log(profile)
         const profileCounty = profile.County
-        const profileTown = profile.Town
+        const profileTown = (profile.Town).split(',')[0]
         //get the locations from the locations models
         const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
         let totalPay= sum + locations.ShippingFee
-        // const initLog = await InitPay.create({
-        //     InitStatus:"Success",
-        //     Message:"Done",
-        //     AuthUrl:"dhhjd",
-        //     AccessCode:"zxzxc",
-        //     PaymentRef:"xcxcvx",
-        //     PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
-        //     UserEmail:email,
-        //     OurRef:OrderId,
-        //     PaymentType:'CheckOut',
-        //     AmountPaid:totalPay,
-        // })
-        // res.json(initLog)
-        InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
+        const initLog = await InitPay.create({
+            InitStatus:"Success",
+            Message:"Done",
+            AuthUrl:"dhhjd",
+            AccessCode:"zxzxc",
+            PaymentRef:"xcxcvx",
+            PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
+            UserEmail:email,
+            OurRef:OrderId,
+            PaymentType:'CheckOut',
+            AmountPaid:totalPay,
+        })
+        res.json(initLog)
+        // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
     }
 }
 const Checkout = async(req, res)=>{
@@ -78,6 +79,7 @@ const Save_CheckOut_Details = async(req,res)=>{
     }else{
         //create the profile
         const profile = new Profile({
+
             Email:userEmail,
             PhoneNumber:phoneNumber,
             Address:residence,
@@ -209,7 +211,6 @@ const Locations = async(req,res)=>{
     res.render('Backend/Locations/Add.ejs',{counties:county,towns:towns})
 }
 const getCallBackData = async(req,res)=>{
-    console.log(req.body)
     const data = req.body
     const stats = data.data
     let paymentStatus = stats.status //Our reference in the payment Initialized
@@ -232,7 +233,6 @@ const getCallBackData = async(req,res)=>{
     //check if payment exists in the db  
     const pExists = await Payments.findOne({paymentref:paymentref,Status:'Not Used'})
     if(pExists){
-        console.log('cant pass here')
         res.json({
             message:'Unknown Error Occurred'
         })
@@ -257,61 +257,73 @@ const getCallBackData = async(req,res)=>{
         })
         //check if the amount paid is the required amount
         let initializedPayment = await InitPay.findOne({OurRef:paymentref})
-        //add the shipping amount 
-        if(initializedPayment.AmountPaid<=payment.paymentAmount){
-            //check the payment type /service or checkout 
-            if(initializedPayment.PaymentType==='Service'){
-                //update the service
-                const serviceBooked = await ServiceBooking.findOne({ServiceID:initializedPayment.OurRef,Client:initializedPayment.UserEmail,Status:'Active'})
-                if(serviceBooked){
-                    //update the service 
-                    serviceBooked.PaymentStatus='Paid'
-                    serviceBooked.save()
-                    //set the payment as used
-                    payment.Status='Used'
-                    payment.save()
-                    res.json({
-                        message:'Service Successfully Paid'
-                    })
+        if(initializedPayment){
+            //add the shipping amount 
+            if(initializedPayment.AmountPaid<=payment.paymentAmount){
+                //check the payment type /service or checkout 
+                if(initializedPayment.PaymentType==='Service'){
+                    //update the service
+                    const serviceBooked = await ServiceBooking.findOne({ServiceID:initializedPayment.PaymentRef,Client:initializedPayment.UserEmail,Status:'Active'})
+                    if(serviceBooked){
+                        //update the service 
+                        serviceBooked.PaymentStatus='Paid'
+                        serviceBooked.save()
+                        //set the payment as used
+                        payment.Status='Used'
+                        payment.save()
+                        res.json({
+                            message:'Service Successfully Paid'
+                        })
+                    }else{
+                        res.json({
+                            message:'Unknown Error Occurred'
+                        })
+                    }
                 }else{
-                    res.json({
-                        message:'Unknown Error Occurred'
-                    })
+                    let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
+                    if(cart){
+                        let sum =0;
+                        let orderOwner = ""
+                        for(let i=0;i<cart.length;i++){
+                            cart[i].Status = 'CheckedOut'
+                            if(orderOwner){
+        
+                            }else{
+                                orderOwner = cart[i].Email
+                            }
+                            await cart[i].save()
+                        }
+                        payment.Status='Used'
+                        payment.save()
+                        //place the order now
+                        const order = new Order({
+                            OrderId:paymentref,
+                            Client:orderOwner,
+                            OrderAmount:payment.paymentAmount,
+                        })
+                        await order.save()
+                        if(order){
+                            res.json({
+                                message:'Order Successfully Placed'
+                            })
+                        }
+                    }else{
+                        res.status(400).json({
+                            message:'No Cart to Pay For'
+                        })
+                    }
                 }
+                //update the cart to as checked out 
+                
             }else{
-                let cart = await Cart.find({OrderId:paymentref,Status:'Active'})
-            let sum =0;
-            let orderOwner = ""
-            for(let i=0;i<cart.length;i++){
-                cart[i].Status = 'CheckedOut'
-                if(orderOwner){
-
-                }else{
-                    orderOwner = cart[i].Email
-                }
-                await cart[i].save()
-            }
-            payment.Status='Used'
-            payment.save()
-            //place the order now
-            const order = new Order({
-                OrderId:paymentref,
-                Client:orderOwner,
-                OrderAmount:payment.paymentAmount,
-            })
-            await order.save()
-            if(order){
+                console.log("Insufficient amount paid")
                 res.json({
-                    message:'Order Successfully Placed'
+                    message:`The amount paid is not the required amount. Please top up ${initializedPayment.AmountPaid-payment.paymentAmount}`
                 })
             }
-            }
-            //update the cart to as checked out 
-            
         }else{
-            console.log("Insufficient amount paid")
-            res.json({
-                message:`The amount paid is not the required amount. Please top up ${initializedPayment.AmountPaid-payment.paymentAmount}`
+            res.status(422).json({
+                message:'Unprocessable Entity. Unknown error Occurred'
             })
         }
     }

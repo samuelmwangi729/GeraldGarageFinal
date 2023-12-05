@@ -141,7 +141,7 @@ const GetRegDetails = async (req,res)=>{
 const GetLoginDetails = async(req,res)=>{
     const {Username,Password} = req.body 
     //then check if the user exists 
-    if(Username.length>0 && Password.length>0){
+    if(Username && Password){
         //then the data is valid
         const user = await User.Login(Username,Password)
         if(user){

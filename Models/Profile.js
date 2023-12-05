@@ -7,8 +7,9 @@ const ProfileSchema = new Schema({
     },
     Title:{
         type:String,
-        enum:['mr','mrs'],
+        enum:['Mr','Mrs'],
         required:[true,'This field is required'],
+        default:'Mr'
     },
     PhoneNumber:{
         type:Number,
@@ -22,7 +23,7 @@ const ProfileSchema = new Schema({
     Residence:{
         type:String,
         required:[true,'This field is required'],
-        default:''
+        default:'Null'
     },
     Address:{
         type:String,

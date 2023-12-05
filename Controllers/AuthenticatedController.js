@@ -280,14 +280,13 @@ const ServiceBookings = async(req,res)=>{
         Message:"Done",
         AuthUrl:"dhhjd",
         AccessCode:"zxzxc",
-        PaymentRef:paymentID,
+        PaymentRef:service._id,
         PaymentReason:`Payment for Service ${service.Title}`,
         UserEmail:res.locals.user.EmailAddress,
-        OurRef:service._id,
+        OurRef:paymentID,
         PaymentType:'Service',
         AmountPaid:service.Pay,
     })
-    await initLog.save()
     // res.json(initLog)
     InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,10,res.locals.user.EmailAddress)
     // console.log(service)
