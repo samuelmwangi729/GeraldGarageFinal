@@ -203,7 +203,6 @@ const AddCart = async(req,res) =>{
             }
         }
     }
-
 }
 const Locations = async(req,res)=>{
     const county = await County.find()

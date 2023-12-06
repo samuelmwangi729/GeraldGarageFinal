@@ -8,6 +8,7 @@ const {getAuthUser,checkAuth,checkAdmin} = require('../Middlewares/Authenticatio
 const ProtectedRoutes = Router()
 
 ProtectedRoutes.get("/Dashboard",getAuthUser,checkAuth,Index)
+ProtectedRoutes.get("/Administrator",getAuthUser,checkAuth,checkAdmin,Index)
 .get("/All-Services",getAuthUser,checkAuth,All_Services)
 .get("/Book-A-Service/",getAuthUser,checkAuth,BookService)
 .post("/Post-Appointment",checkAuth,getAuthUser,ServiceBookings)

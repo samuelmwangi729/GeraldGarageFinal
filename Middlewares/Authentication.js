@@ -1,7 +1,7 @@
 require('dotenv').config()
 const token  = require('jsonwebtoken')
 const User = require('../Models/Users')
-
+const url = require('url')
 //check if the user is authenticated 
 const checkAuth = (req,res,next)=>{
     //check if the jwt token exists
@@ -58,7 +58,6 @@ const checkAdmin = (req,res,next)=>{
         //verify the token
         token.verify(tokenExists,process.env.TOKEN_SECRET_KEY,async (err,decodedToken)=>{
             if(err){
-                res.locals.user=null
                 res.redirect("/")
             }else{
                 const userId = decodedToken.uniqueKey
@@ -66,13 +65,14 @@ const checkAdmin = (req,res,next)=>{
                 if(userData.Role==='Admin' && userData.isStaff ==='Staff'){
                     next()
                 }else{
+                    //if logged in and not admin, goto dashboadr
                     res.redirect("/Dashboard")
                 }
             }
         })
     }else{
-        
-        res.redirect("/Dashboard")
+        //back to homepage
+        res.redirect("/")
     }
 }
 module.exports = {checkAuth,getAuthUser,checkAdmin}

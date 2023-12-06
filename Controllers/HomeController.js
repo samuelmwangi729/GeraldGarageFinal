@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const generateRandom = require('../Utils/RandomUID')
 const {Services} = require('../Models/Services')
 const {About} = require('../Models/About')
+const {checkAdmin} = require('../Middlewares/Authentication')
 const EventEmitter = require('events')
 const event  = new EventEmitter()
 var isEmailValid=false
@@ -156,14 +157,23 @@ const GetLoginDetails = async(req,res)=>{
             //update the identifier 
             visitor.VisitorIdentifier = Username
             visitor.save()
+            let path;
+            //check if user is admin or not
+            const isAdmin = await User.findOne({EmailAddress:Username})
+            if(isAdmin.Role==='Admin' && isAdmin.isStaff ==='Staff'){
+                path='/Administrator'
+            }else{
+                path='/Dashboard'
+            }
             //after this redirect the user to the dashboard
             let data = {
                 status:'success',
                 message:'User Successfully Logged In',
-                path:'/Dashboard',
+                path:path,
                 code:200
             }
             res.status(200).json(data)
+            
         }else{
             let data = {
                 status:'error',
