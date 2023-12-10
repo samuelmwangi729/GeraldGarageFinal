@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../Layouts/Backend/Header.ejs') %>
+
+  <body>
+    <!-- tap on top starts-->
+    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
+    <!-- tap on tap ends-->
+    <!-- Loader starts-->
+    <div class="loader-wrapper">
+      <div class="loader"></div>
+    </div>
+    <!-- Loader ends-->
+    <!-- page-wrapper Start-->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+      <!-- Page Header Start-->
+      <div class="page-header">
+        <div class="header-wrapper row m-0">
+          <form class="form-inline search-full col" action="#" method="get">
+            <div class="form-group w-100">
+              <div class="Typeahead Typeahead--twitterUsers">
+                <div class="u-posRelative">
+                  <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text"
+                    placeholder="Search Koho .." name="q" title="" autofocus>
+                  <div class="spinner-border Typeahead-spinner" role="status"><span class="sr-only">Loading...</span>
+                  </div><i class="close-search" data-feather="x"></i>
+                </div>
+                <div class="Typeahead-menu"></div>
+              </div>
+            </div>
+          </form>
+          <div class="header-logo-wrapper col-auto p-0">
+            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light"
+                  src="Backend/images/logo/logo.png" alt=""><img class="img-fluid for-dark"
+                  src="Backend/images/logo/logo-dark.png" alt=""></a></div>
+            <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+            </div>
+          </div>
+          <div class="left-header col horizontal-wrapper ps-0">
+          </div>
+          <div class="nav-right col-6 pull-right right-header p-0">
+            <ul class="nav-menus">
+              <li>
+                <div class="mode"><i data-feather="moon"></i></div>
+              </li>
+              <li class="maximize"><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i
+                    data-feather="maximize"></i></a></li>
+              <li class="profile-nav onhover-dropdown p-0 me-0">
+                <div class="d-flex profile-media"><img class="b-r-50" src="Backend/images/dashboard/profile.png" alt="">
+                  <div class="flex-grow-1"><span>
+                      <%= user.FullName %>
+                    </span>
+                    <p class="mb-0 font-roboto">
+                      <%= user.Role %> <i class="fa fa-angle-down"></i>
+                    </p>
+                  </div>
+                </div>
+                <ul class="profile-dropdown onhover-show-div">
+                  <li><a href="/Logout"><i data-feather="log-in"> </i><span>Log out</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Page Header Ends -->
+      <!-- Page Body Start-->
+      <div class="page-body-wrapper">
+        <div class="page-body">
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-6">
+                  <h3>Dashboard</h3>
+                </div>
+                <div class="col-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Dashboard"> <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item active">Index</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid general-widget">
+            <div class="row">
+              <div class="col-sm-6 col-lg-3">
+                <a href="/All-Products">
+                  <div class="card o-hidden">
+                    <div class="card-body">
+                      <div class="d-flex static-widget">
+                        <div class="flex-grow-1">
+                          <h6 class="font-roboto">Shop</h6>
+                          <h2 class="mb-0 counter">
+                            <%= products %>
+                          </h2>
+                        </div>
+                        <i class="txt-success" data-feather="gift" style="height:50px;width:60px"></i>
+                      </div>
+                      <div class="progress-widget">
+                        <div class="progress sm-progress-bar progress-animate">
+                          <div class="progress-gradient-success" role="progressbar" style="width: 90%"
+                            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span
+                              class="animate-circle"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <a href="/All-Orders">
+                  <div class="card o-hidden">
+                    <div class="card-body">
+                      <div class="d-flex static-widget">
+                        <div class="flex-grow-1">
+                          <h6 class="font-roboto">My Orders</h6>
+                          <h2 class="mb-0 counter">
+                            <%= orders %>
+                          </h2>
+                        </div>
+                        <i class="txt-primary" data-feather="truck" style="height:50px;width:60px"></i>
+                      </div>
+                      <div class="progress-widget">
+                        <div class="progress sm-progress-bar progress-animate">
+                          <div class="progress-gradient-primary" role="progressbar" style="width: 90%"
+                            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"><span
+                              class="animate-circle"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <a href="/Profile">
+                  <div class="card o-hidden">
+                    <div class="card-body">
+                      <div class="d-flex static-widget">
+                        <div class="flex-grow-1">
+                          <h6 class="font-roboto">My Account</h6>
+                          <h2 class="mb-0">
+                            <% if(user.AccountStatus==='Verified' ) { %>
+                              <span class="badge badge-success">Verified</span>
+                              <% }else{ %>
+                                <span class="txt-danger">Not Verified</span>
+                                <% }%>
+                          </h2>
+                        </div>
+                        <% if(user.AccountStatus==='Verified' ) { %>
+                          <i class="txt-success" data-feather="check-square" style="height:50px;width:60px"></i>
+                        <% }else{ %>
+                          <i class="txt-danger" data-feather="x-square" style="height:50px;width:60px"></i>
+                        <% }%>
+                      </div>
+                      <div class="progress-widget">
+                        <div class="progress sm-progress-bar progress-animate">
+                          <% if(user.AccountStatus==='Verified' ) { %>
+                            <div class="progress-gradient-success" role="progressbar" style="width: 48%" aria-valuenow="75"
+                            aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                          <% }else{ %>
+                            <div class="progress-gradient-danger" role="progressbar" style="width: 48%" aria-valuenow="75"
+                            aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                          <% }%>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <a href="/Cart">
+                  <div class="card o-hidden">
+                    <div class="card-body">
+                      <div class="d-flex static-widget">
+                        <div class="flex-grow-1">
+                          <h6 class="font-roboto">View Cart</h6>
+                          <h2 class="mb-0 counter">
+                            <%= cartItems %>
+                          </h2>
+                        </div>
+                        <i class="txt-danger" data-feather="shopping-cart" style="height:50px;width:60px"></i>
+                      </div>
+                      <div class="progress-widget">
+                        <div class="progress sm-progress-bar progress-animate">
+                          <div class="progress-gradient-danger" role="progressbar" style="width: 90%" aria-valuenow="75"
+                            aria-valuemin="0" aria-valuemax="100"><span class="animate-circle"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-xxl-6 col-xl-12 cols-xl-100 col-sm-12 box-col-12">
+                <div class="card o-hidden">
+                  <div class="weather-widget-two">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-xl-6 col-md-6">
+                          <div class="mobile-clock-widget">
+                            <div>
+                              <ul class="clock" id="clock">
+                                <li class="hour" id="hour"></li>
+                                <li class="min" id="min"></li>
+                                <li class="sec" id="sec"></li>
+                              </ul>
+                              <div class="date f-24 mb-2" id="date"><span id="monthDay"></span><span id="year">, </span>
+                              </div>
+                              <div>
+                                <p class="m-0 f-14 text-light" id="timeHere"></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6">
+                          <div class="card">
+                            <div class="cal-date-widget card-body">
+                              <div class="cal-datepicker">
+                                <div class="datepicker-here float-sm-end" data-language="en"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid Ends-->
+        </div>
+        <!-- footer start-->
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-10 p-0 footer-left">
+                <p class="mb-0">&copy; <%= new Date().getFullYear() %> Gitome Computer Garage</p>
+              </div>
+              <div class="col-2 p-0 footer-right"> <i data-feather="heart" class="text-success"> </i></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <%- include('../../Layouts/Backend/Scripts.ejs') %>
+      <script>
+        function checkTime(i) {
+          if (i < 10) {
+            i = "0" + i;
+          }
+          return i;
+        }
+
+        function startTime() {
+          var today = new Date();
+          var h = today.getHours();
+          var m = today.getMinutes() + 1;
+          var s = today.getSeconds();
+          // add a zero in front of numbers<10
+          m = checkTime(m);
+          s = checkTime(s);
+          document.getElementById('timeHere').textContent = h + ":" + m + ":" + s;
+          t = setTimeout(function () {
+            startTime()
+          }, 1000);
+        }
+        startTime();
+      </script>
+  </body>
+
+</html>

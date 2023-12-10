@@ -11,9 +11,17 @@ const InitiatePay = require('../Utils/Payments')
 const InitPay = require('../Models/InitializedPayments')
 const {County,Town} = require('../Models/Locations')
 const url = require('url')
+const Tokens = require('../Models/Tokens')
 const path = require('path')
 const generateRandom = require('../Utils/RandomUID')
 
+
+const UserIndex = async(req,res)=>{
+    const products = await Products.countDocuments()
+    const cartItems = await Cart.countDocuments({Email:res.locals.user.EmailAddress,Status:'Active'})
+    const orders = await Orders.countDocuments({Client:res.locals.user.EmailAddress})
+    res.render('Backend/UserIndex.ejs',{cartItems,products,orders})
+}
 const Index = async (req,res)=>{
     const services = await Services.countDocuments()
     const products = await Products.countDocuments()
@@ -291,9 +299,62 @@ const ServiceBookings = async(req,res)=>{
     InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,10,res.locals.user.EmailAddress)
     // console.log(service)
 }
+const Verify_Profile =  async (req,res)=>{
+    const genToken = generateRandom(2)
+    //check if the token exists and is used
+    const tokenExists = await Tokens.findOne({
+        userEmail:res.locals.user.EmailAddress,
+        tokenType:'Verification',
+        tokenStatus:'Not Used'
+    })
+    if(tokenExists){
+        //user is verified
+        res.render('Backend/Verify.ejs',{message:'We sent a code to your Email. Please Enter it Here'})
+    }else{
+        const token = Tokens.create({
+            tokenValue:genToken,
+            tokenType:'Verification',
+            userEmail:res.locals.user.EmailAddress
+        })
+        //ask for verification code sent via email 
+        //nodemailer 
+        res.render('Backend/Verify.ejs',{message:'We sent a code to your Email. Please Enter it Here'})
+    }
+}
+const Verify_Token_Posted = async(req, res)=>{
+    //generate the token 
+    const {VerificationToken} = req.body
+    const token = await Tokens.findOne({
+        tokenValue:VerificationToken,
+        userEmail:res.locals.user.EmailAddress,
+        tokenType:'Verification',
+        tokenStatus:'Not Used'
+    })
+    if(token){
+        //verify the user account 
+        const User = require('../Models/Users')
+        const userData = await User.findOne({EmailAddress:res.locals.user.EmailAddress})
+        userData.AccountStatus = 'Verified'
+        userData.save()
+        //set the token to used 
+        token.tokenStatus = 'Used'
+        token.save()
+        res.status(200).json({
+            status:'success',
+            message:'Token Verified',
+            code:200
+        })
+    }else{
+        res.status(422).json({
+            status:'error',
+            message:'Incorrect Token Submitted',
+            code:422
+        })
+    }
+}
 module.exports = {Index,Profile,All_Products,All_Services,
     All_Orders,GetProfileData,
     Add_Service,AcceptServiceData,
     Activate_Service,View_Service,
     BookService,
-    Suspend_Service,ServiceBookings,Delete_Service}
+    Verify_Token_Posted,Suspend_Service,ServiceBookings,Delete_Service,UserIndex,Verify_Profile}
