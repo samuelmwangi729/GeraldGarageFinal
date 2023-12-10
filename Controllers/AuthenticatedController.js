@@ -14,7 +14,7 @@ const url = require('url')
 const Tokens = require('../Models/Tokens')
 const path = require('path')
 const generateRandom = require('../Utils/RandomUID')
-
+const sendEmail = require('../Utils/MailSender')
 
 const UserIndex = async(req,res)=>{
     const products = await Products.countDocuments()
@@ -91,7 +91,6 @@ const Add_Service = async(req,res)=>{
     res.render('Backend/Add_Services.ejs',{services:services})
 }
 const AcceptServiceData = async(req,res)=>{
-    console.log(req.body)
     const {Title,
         Headline,
         Pay,
@@ -206,7 +205,6 @@ const Suspend_Service = async (req,res)=>{
     let message ;
     let status ;
     let {ServiceID} = req.body
-    console.log("backend called")
     if(!ServiceID){
         code = 422
         message=`Invalid Data Submitted`
@@ -220,7 +218,6 @@ const Suspend_Service = async (req,res)=>{
             code = 200
             message=`${service.Title} Successfully Suspended`
             status='success'
-            console.log(service)
         }else{
             code = 422
             message=`Service Could not be  Suspended`
@@ -250,7 +247,6 @@ const Delete_Service = async (req,res)=>{
             code = 200
             message=`Service Successfully Deleted`
             status='success'
-            console.log(service)
         }else{
             code = 422
             message=`Service Could not be Deleted`
@@ -297,7 +293,6 @@ const ServiceBookings = async(req,res)=>{
     })
     // res.json(initLog)
     InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,10,res.locals.user.EmailAddress)
-    // console.log(service)
 }
 const Verify_Profile =  async (req,res)=>{
     const genToken = generateRandom(2)
@@ -318,6 +313,7 @@ const Verify_Profile =  async (req,res)=>{
         })
         //ask for verification code sent via email 
         //nodemailer 
+        const emailResponse = await sendEmail (res.locals.user.EmailAddress, 'Please Verify Your Profile',genToken)
         res.render('Backend/Verify.ejs',{message:'We sent a code to your Email. Please Enter it Here'})
     }
 }
