@@ -31,26 +31,25 @@ const Pay = async (req,res)=>{
             await cart[i].save()
         }
         const profile = await Profile.findOne({Email:email})
-        console.log(profile)
         const profileCounty = profile.County
         const profileTown = (profile.Town).split(',')[0]
         //get the locations from the locations models
         const locations = await Town.findOne({County:profileCounty,TownName:profileTown})
         let totalPay= sum + locations.ShippingFee
-        const initLog = await InitPay.create({
-            InitStatus:"Success",
-            Message:"Done",
-            AuthUrl:"dhhjd",
-            AccessCode:"zxzxc",
-            PaymentRef:"xcxcvx",
-            PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
-            UserEmail:email,
-            OurRef:OrderId,
-            PaymentType:'CheckOut',
-            AmountPaid:totalPay,
-        })
-        res.json(initLog)
-        // InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,10,email)
+        // const initLog = await InitPay.create({
+        //     InitStatus:"Success",
+        //     Message:"Done",
+        //     AuthUrl:"dhhjd",
+        //     AccessCode:"zxzxc",
+        //     PaymentRef:"xcxcvx",
+        //     PaymentReason:`Payment for Goods Plus Delivery for order ${OrderId}`,
+        //     UserEmail:email,
+        //     OurRef:OrderId,
+        //     PaymentType:'CheckOut',
+        //     AmountPaid:totalPay,
+        // })
+        // res.json(initLog)
+        InitiatePay(res,OrderId,'CheckOut',`Payment for Goods Plus Delivery for order ${OrderId}`,totalPay,email)
     }
 }
 const Checkout = async(req, res)=>{
@@ -315,7 +314,6 @@ const getCallBackData = async(req,res)=>{
                 //update the cart to as checked out 
                 
             }else{
-                console.log("Insufficient amount paid")
                 res.json({
                     message:`The amount paid is not the required amount. Please top up ${initializedPayment.AmountPaid-payment.paymentAmount}`
                 })

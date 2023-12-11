@@ -1,6 +1,26 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const sendEmail = async (to, subject,code) => {
+const sendEmail = async (to,subject,code,type="verification") => {
+	let message=""
+	if(type == "verification"){
+		message=`<p>Hi,</p>
+        <p>Please click on the following link to verify your account:</p>
+        <p>Please use the code to verify your Account</p>
+        <p><a href="#" class="btn btn-primary">${code}</a></p>
+        <p>If you did not make this request, please ignore this email.</p>
+        <p>Regards,</p>
+        <p>The Goods Plus Team</p>`
+	}else{
+		message=`<p>Hi,</p>
+        <p>Someone requested a password reset to your account</p>
+        <p>Use this code to reset your password</p>
+		<p><a href="http://localhost:8080/Password-Reset-Token/${code}" class="btn btn-primary">
+		Click Here to Reset Password
+		</a></p>
+		<p>If you did not make this request, please ignore this email.</p>
+        <p>Regards,</p>
+        <p>The Goods Plus Team</p>`
+	}
   try {
     //create transport
     const transporter = nodemailer.createTransport({
@@ -328,9 +348,7 @@ ul.social li{
             	<tr>
             		<td>
             			<div class="text" style="padding: 0 2.5em; text-align: center;">
-            				<h2>Please verify your Profile</h2>
-            				<h3>Please Use this Verification Code to Verift your Account</h3>
-            				<p><a href="#" class="btn btn-primary">${code}</a></p>
+            				${message}
             			</div>
             		</td>
             	</tr>

@@ -31,7 +31,7 @@ const connDb = async ()=>{
         }
     }catch(e){
         dbConnected.emit('Connection','unsuccess')
-        console.log('Connection to the database was Unsuccessful, retrying now....')
+        console.error('Connection to the database was Unsuccessful, retrying now....')
     }
 }
 

@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {Index,AboutUs,Service,Projects,Blog,Contact,Subscribe,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout} = require('../Controllers/HomeController')
+const {Index,AboutUs,Service,Projects,Blog,getPasswordResetPages,getPasswords,Contact,Subscribe,getPasswordResetToken,getResetEmail,Login,Register,Reset,GetRegDetails,GetLoginDetails,Logout} = require('../Controllers/HomeController')
 
 //create an instance 
 const homeRoutes = Router()
@@ -19,6 +19,9 @@ homeRoutes.get("/",Index)
 .post('/Subscribe',Subscribe)
 .post('/Get-Registration-Details',GetRegDetails)
 .post('/Get-Details-Login',GetLoginDetails)
-
+.post("/get-reset-Email",getResetEmail)
+.get("/Password-Reset-Token/:Token",getPasswordResetToken)
+.get("/Reset",getPasswordResetPages)
+.post("/Get-Passwords",getPasswords)
 
 module.exports = homeRoutes

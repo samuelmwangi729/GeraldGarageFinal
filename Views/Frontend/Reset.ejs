@@ -13,14 +13,19 @@
             </div>
             <div class="p-[50px] bg-white relative z-10 
                 shadow-[0px_1px_15px_0px_rgba(62,65,159,0.1)] sm:p-7 sm:pt-[50px]">
-                <form method="post" class="contact-validation-active mx-[-15px]"
-                    id="loginForm">
+                <form class="contact-validation-active mx-[-15px]"
+                    id="resetForm">
+                    <span class="text-[#ff4a17]" id="errorSpan"></span>
                     <div class="w-[calc-(100%-25px)] mb-[25px] mx-[15px]">
-                        <input type="text" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
+                        <input type="email" class="form-control w-full bg-transparent border-[1px] border-[#ebebeb] h-[50px]
                             text-[#212529] transition-all pl-[25px] focus:outline-0 focus:shadow-none
-                             focus:border-[#ff4a17] focus:bg-transparent " name="username" id="username"
+                             focus:border-[#ff4a17] focus:bg-transparent " name="EmailAddress" id="username"
                             placeholder="Enter your email address" autocomplete="off">
                     </div>
+                    <button class="bg-[#ff4a17] text-[#fff] inline-block py-[12px] px-[22px] border
+                    hover:text-[#ff4a17]
+                    border-transparent ] capitalize transition-all hover:bg-transparent
+                    hover:border-[#ff4a17]" type="submit">Reset Password</button>
                     <div class="flex justify-center">
                         <span class="px-2">
                             <a href="/Register" class="text-blue-500 cursor:pointer">
@@ -42,7 +47,31 @@
         <!-- start footer -->
     </div>
     <!-- end of page-wrapper -->
-    <%- include('../../Layouts/Frontend/Scripts.ejs')%>  
+    <%- include('../../Layouts/Frontend/Scripts.ejs')%> 
+    <script>
+        const form = document.querySelector("form#resetForm")
+        const errorSpan = document.querySelector("span#errorSpan")
+        const url = "/get-reset-Email"
+        form.addEventListener('submit',async(e)=>{
+            e.preventDefault()
+            const email = form.EmailAddress.value
+            if(!email){
+                errorSpan.textContent = "Please enter your email address"
+                return
+            }
+            const res = await fetch(url,{
+                method:'POST',
+                body:JSON.stringify({
+                    EmailAddress:email
+                }),
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            })
+            const databack = await res.json()
+            errorSpan.textContent = databack.message
+        })
+    </script> 
 </body>
 
 </html>

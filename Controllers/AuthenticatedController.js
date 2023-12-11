@@ -279,20 +279,20 @@ const ServiceBookings = async(req,res)=>{
     await bservice.save()
     let paymentID = generateRandom(5)
     //initialize payment for the service 
-    const initLog = await InitPay.create({
-        InitStatus:"Success",
-        Message:"Done",
-        AuthUrl:"dhhjd",
-        AccessCode:"zxzxc",
-        PaymentRef:service._id,
-        PaymentReason:`Payment for Service ${service.Title}`,
-        UserEmail:res.locals.user.EmailAddress,
-        OurRef:paymentID,
-        PaymentType:'Service',
-        AmountPaid:service.Pay,
-    })
+    // const initLog = await InitPay.create({
+    //     InitStatus:"Success",
+    //     Message:"Done",
+    //     AuthUrl:"dhhjd",
+    //     AccessCode:"zxzxc",
+    //     PaymentRef:service._id,
+    //     PaymentReason:`Payment for Service ${service.Title}`,
+    //     UserEmail:res.locals.user.EmailAddress,
+    //     OurRef:paymentID,
+    //     PaymentType:'Service',
+    //     AmountPaid:service.Pay,
+    // })
     // res.json(initLog)
-    InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,10,res.locals.user.EmailAddress)
+    InitiatePay(res,paymentID,'Service',`Payment for Goods Plus Delivery for order ${service._id}`,service.Pay,res.locals.user.EmailAddress)
 }
 const Verify_Profile =  async (req,res)=>{
     const genToken = generateRandom(2)

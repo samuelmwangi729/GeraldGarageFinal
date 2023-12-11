@@ -116,7 +116,6 @@ const WorkOnCounty = async (req, res)=>{
             })
             break;
         case 'Suspend':
-            console.log('suspending')
             countyDetails.status='Inactive'
             await countyDetails.save()
             res.status(200).json({
@@ -153,7 +152,6 @@ const GetTowns = async (req,res)=>{
     const {countyName} = req.body
     //get the towns 
     const towns = await Town.find({County:countyName,status:'Active'})
-    console.log(towns)
     if(towns){
         res.status(200).json({
             status:'success',
