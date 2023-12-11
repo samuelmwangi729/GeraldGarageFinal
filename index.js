@@ -38,4 +38,3 @@ app.use(express.static('Resources'))
 app.use((req,res)=>{
     res.render('Frontend/404.ejs')
  })
-module.exports = server
