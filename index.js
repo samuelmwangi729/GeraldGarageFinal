@@ -13,7 +13,7 @@ const app = express()
 //create a listening port 
 const port = 8080
 
-const server = app.listen(port,()=>{
+app.listen(port,()=>{
     console.log("\n==========================================")
     console.log(`Server Started on port ${port}...`)
     console.log('Press CTRL + C to Cancel')
@@ -38,4 +38,3 @@ app.use(express.static('Resources'))
 app.use((req,res)=>{
     res.render('Frontend/404.ejs')
  })
-module.exports = server
