@@ -11,7 +11,7 @@ const LocationRouter = require('./Routes/LocationRoutes')
 const app = express()
 //set the view engine 
 //create a listening port 
-const port = 8080
+const port = process.env.SERVER_PORT || 3000
 
 const server = app.listen(port,()=>{
     console.log("\n==========================================")

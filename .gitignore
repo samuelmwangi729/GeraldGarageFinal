@@ -2,3 +2,4 @@
 .env
 /Resources/Uploads
 callBackData.json
+.vscode/
